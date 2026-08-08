@@ -1,8 +1,15 @@
-export default function HomePage() {
+import Hero from "@/components/Hero/Hero";
+import About from "@/components/About/About";
+//import PopularArticles from "@/components/PopularArticles/PopularArticles";
+import Creators from "@/components/Creators/Creators";
+
+export default function Home() {
   return (
-    <div>
-      <h1>Harmoniq</h1>
-      {/* TODO: Hero, About, PopularArticles, Creators */}
-    </div>
+    <main>
+      <Hero />
+      <About />
+      {/* <PopularArticles /> */}
+      <Creators />
+    </main>
   );
 }

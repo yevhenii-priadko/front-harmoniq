@@ -6,6 +6,21 @@
   padding: 0;
 }
 
+:root {
+  --font-family: var(--font-manrope), sans-serif;
+  --second-family: var(--font-dm-sans), sans-serif;
+  --third-family: var(--font-noto-sans), sans-serif;
+  --green: #649179;
+  --black: #070721;
+  --light-green: #d1e0d8;
+  --red: #ad6a6c;
+  --purple: #7678ed;
+  --white: #f7fffb;
+  --green-darker: #374f42;
+  --gray: #595d62;
+  --light-gray: #9f9f9f;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -66,19 +81,4 @@ h6 {
 #root,
 #__next {
   isolation: isolate;
-}
-
-:root {
-  --font-family: var(--font-manrope), sans-serif;
-  --second-family: var(--font-dm-sans), sans-serif;
-  --third-family: var(--font-noto-sans), sans-serif;
-  --green: #649179;
-  --black: #070721;
-  --light-green: #d1e0d8;
-  --red: #ad6a6c;
-  --purple: #7678ed;
-  --white: #f7fffb;
-  --green-darker: #374f42;
-  --gray: #595d62;
-  --light-gray: #9f9f9f;
 }

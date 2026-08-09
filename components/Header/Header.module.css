@@ -6,12 +6,6 @@
   background-color: var(--light-green);
 }
 
-/* Контейнер прив'язаний шириною до конкретного Figma-фрейму на кожному
-   брейкпоінті: mobile — "гумовий" від 320 до 375px (як зазначено
-   в Критерии_GoIt), tablet — зафіксований на 768px, desktop — на 1440px.
-   Секція (.header) задає вертикальний padding, контейнер — лише
-   горизонтальний. Без цього на широких моніторах контент би нескінченно
-   розповзався в сторони — фон .header лишається full-bleed, контент — центрований. */
 .container {
   display: flex;
   align-items: center;
@@ -30,11 +24,6 @@
   white-space: nowrap;
 }
 
-/* Група правих елементів хедера — кнопка дії + бургер (tablet),
-   або nav + кнопка + UserBar (desktop). justify-content: space-between
-   на .container працює саме між .logo і цією групою, а не між кожним
-   елементом окремо — інакше на tablet кнопка й бургер розʼїжджаються
-   на всю ширину замість gap: 16px між ними, як у Figma. */
 .actions {
   display: flex;
   align-items: center;
@@ -71,8 +60,6 @@
 }
 
 /* ---------- Кнопка дії (Join now / Create an article) ---------- */
-/* На мобілці схована в рядку хедера — переїжджає всередину бургер-меню.
-   На tablet і desktop лишається видна поряд з бургер-іконкою / навігацією. */
 
 .actionButton {
   display: none;
@@ -94,67 +81,10 @@
   background-color: var(--green-darker);
 }
 
-/* Дублікат кнопки всередині бургер-меню — видно лише на мобілці при відкритому меню */
 .actionButtonMobile {
   composes: actionButton;
   display: inline-flex;
   width: 100%;
-}
-
-/* ---------- UserBar (лише авторизований, лише Desktop closed) ---------- */
-
-.userBar {
-  display: none;
-  align-items: center;
-  gap: 16px;
-}
-
-.userAvatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.userAvatarFallback {
-  display: grid;
-  width: 32px;
-  height: 32px;
-  place-items: center;
-  border-radius: 50%;
-  background-color: var(--light-green);
-  color: var(--green-darker);
-}
-
-.userAvatarIcon {
-  width: 20px;
-  height: 20px;
-  fill: none;
-  stroke: currentColor;
-}
-
-.userName {
-  color: var(--black);
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.exitButton {
-  display: inline-flex;
-  color: var(--black);
-  transition: color 200ms ease;
-}
-
-.exitButton:hover,
-.exitButton:focus-visible {
-  color: var(--red);
-}
-
-.exitIcon {
-  width: 20px;
-  height: 20px;
-  fill: none;
-  stroke: currentColor;
 }
 
 /* ---------- Бургер-кнопка (схована на desktop) ---------- */
@@ -198,12 +128,10 @@
     padding: 0 32px;
   }
 
-  /* На tablet кнопка дії лишається видна в рядку хедера постійно */
   .actionButton {
     display: inline-flex;
   }
 
-  /* і тому дублікат всередині мобільного меню на tablet не потрібен */
   .actionButtonMobile {
     display: none;
   }
@@ -231,11 +159,6 @@
     display: inline-flex;
   }
 
-  .userBar {
-    display: flex;
-  }
-
-  /* На desktop бургер і меню, що розкривається, не потрібні взагалі */
   .burgerButton {
     display: none;
   }

@@ -3,6 +3,7 @@ import "modern-normalize/modern-normalize.css";
 import "@/styles/globals.css";
 import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
+import UserBar from "@/components/UserBar/UserBar";
 
 const manrope = Manrope({
   subsets: ["latin"],

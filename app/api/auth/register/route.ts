@@ -1,15 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const BACKEND_URL = process.env.BACKEND_URL;
 
-type RegisterPayload = {
-  username: string;
-  email: string;
-  password: string;
-};
-
-// API-роут для обробки POST-запитів на реєстрацію користувача.
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   if (!BACKEND_URL) {
     return NextResponse.json(
       { message: "Backend URL is not configured" },
@@ -17,51 +10,31 @@ export async function POST(request: Request) {
     );
   }
 
-  let payload: RegisterPayload;
+  let body;
 
-  // Спроба розпарсити JSON з тіла запиту. Якщо не вдається, повертаємо помилку 400.
   try {
-    payload = (await request.json()) as RegisterPayload;
+    body = await req.json();
   } catch {
     return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
   }
 
-  if (
-    typeof payload.username !== "string" ||
-    typeof payload.email !== "string" ||
-    typeof payload.password !== "string"
-  ) {
-    return NextResponse.json({ message: "Invalid registration data" }, { status: 400 });
-  }
-
-  // Перевірка наявності всіх необхідних полів у payload
   try {
-    const backendResponse = await fetch(`${BACKEND_URL}/auth/register`, {
+    // Відправляємо дані реєстрації на backend.
+    const apiRes = await fetch(`${BACKEND_URL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        username: payload.username,
-        email: payload.email,
-        password: payload.password,
-      }),
+      body: JSON.stringify(body),
       cache: "no-store",
     });
 
-    // Перевірка статусу відповіді від бекенду
-    const responseData = await backendResponse.json().catch(() => null);
+    // Отримуємо відповідь backend.
+    const data = await apiRes.json();
 
-    if (!responseData) {
-      return NextResponse.json(
-        { message: "Authentication server returned an invalid response" },
-        { status: 502 },
-      );
-    }
-
-    // Повертаємо відповідь від бекенду клієнту, зберігаючи статус-код.
-    return NextResponse.json(responseData, {
-      status: backendResponse.status,
+    // Повертаємо дані та зберігаємо статус backend.
+    return NextResponse.json(data, {
+      status: apiRes.status,
     });
   } catch {
     return NextResponse.json(

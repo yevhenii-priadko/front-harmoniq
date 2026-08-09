@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import UserBar from '../UserBar/UserBar';
 import css from './Header.module.css';
 
 type NavItem = {
@@ -33,10 +33,9 @@ type HeaderProps = {
     name: string;
     avatarUrl?: string | null;
   } | null;
-  onLogoutClick?: () => void;
 };
 
-function Header({ isAuthenticated = false, user = null, onLogoutClick }: HeaderProps) {
+function Header({ isAuthenticated = false, user = null }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -102,34 +101,7 @@ function Header({ isAuthenticated = false, user = null, onLogoutClick }: HeaderP
 
             {/* UserBar — лише Desktop, лише авторизований, закрите меню */}
             {isAuthenticated && user && (
-              <div className={css.userBar}>
-                {user.avatarUrl ? (
-                  <Image
-                    src={user.avatarUrl}
-                    alt={user.name}
-                    width={32}
-                    height={32}
-                    className={css.userAvatar}
-                  />
-                ) : (
-                  <span className={css.userAvatarFallback} aria-hidden="true">
-                    <svg className={css.userAvatarIcon}>
-                      <use href="/sprite.svg#icon-user" />
-                    </svg>
-                  </span>
-                )}
-                <span className={css.userName}>{user.name}</span>
-                <button
-                  type="button"
-                  className={css.exitButton}
-                  aria-label="Log out"
-                  onClick={onLogoutClick}
-                >
-                  <svg className={css.exitIcon} aria-hidden="true">
-                    <use href="/sprite.svg#icon-log-out" />
-                  </svg>
-                </button>
-              </div>
+              <UserBar user={{ username: user.name, avatar: user.avatarUrl ?? undefined }} />
             )}
 
             {/* Бургер-кнопка — схована на Desktop */}

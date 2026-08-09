@@ -6,20 +6,28 @@ function Footer() {
 
   return (
     <footer className={css.footer}>
-      <Link href="/" className={css.logo}>
-        harmoniq
-      </Link>
+      <div className={css.container}>
+        <Link href="/" className={css.logo}>
+          harmoniq
+        </Link>
 
-      <p className={css.copyright}>
-        © {year} Harmoniq. All rights reserved.
-      </p>
+        <p className={css.copyright}>© {year} Harmoniq. All rights reserved.</p>
 
-      <nav className={css.links}>
-  <ul className={css.linksList}>
-    <li><Link href="/articles">Articles</Link></li>
-    <li><Link href="/profile">Account</Link></li>
-  </ul>
-</nav>
+        <nav aria-label="Footer navigation">
+          <ul className={css.linksList}>
+            <li>
+              <Link href="/articles" className={css.link}>
+                Articles
+              </Link>
+            </li>
+            <li>
+              <Link href="/profile" className={css.link}>
+                Account
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </footer>
   );
 }

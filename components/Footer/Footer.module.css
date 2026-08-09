@@ -1,14 +1,33 @@
+/* Mobile-first: база = mobile/tablet (структура на цих брейкпоінтах ідентична
+   за даними з Figma), потім override для desktop від 1440px.
+   Брейкпоінти — як у Критерии_GoIt: mobile 320/375, tablet 768, desktop 1440. */
+
 .footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px 108px;
+  padding: 24px 0;
   background-color: var(--light-green);
 }
 
+/* Контейнер прив'язаний шириною до конкретного Figma-фрейму на кожному
+   брейкпоінті: mobile — "гумовий" від 320 до 375px (як зазначено
+   в Критерии_GoIt), tablet — зафіксований на 768px, desktop — на 1440px.
+   Секція (.footer) задає вертикальний padding, контейнер — лише
+   горизонтальний. Без цього на широких моніторах футер би нескінченно
+   розтягувався в сторони. Фон .footer лишається full-bleed, контент — центрований. */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  min-width: 320px;
+  max-width: 393px;
+  margin: 0 auto;
+  padding: 0 59px;
+  text-align: center;
+}
+
 .logo {
-  font-weight: 700;
   color: var(--green);
+  font-weight: 700;
   text-decoration: none;
 }
 
@@ -25,33 +44,35 @@
   list-style: none;
 }
 
-.links {
-  display: flex;
-  gap: 32px;
-}
-
-.links a {
+.link {
   color: var(--green-darker);
   text-decoration: none;
 }
 
-.links a:hover {
+.link:hover,
+.link:focus-visible {
   text-decoration: underline;
 }
 
-/* Tablet */
-@media (max-width: 1024px) {
-  .footer {
-    flex-direction: column;
-    gap: 32px;
-    padding: 24px 59px;
-    text-align: center;
+/* ============ TABLET — від 768px ============ */
+/* Структура на tablet ідентична mobile (колонка, той самий padding/gap) —
+   змінюється лише max-width контейнера під ширину tablet-фрейму. */
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
   }
 }
 
-/* Mobile */
-@media (max-width: 480px) {
-  .footer {
-    padding: 24px 59px;
+/* ============ DESKTOP — від 1440px ============ */
+
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1440px;
+    padding: 0 108px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
   }
 }

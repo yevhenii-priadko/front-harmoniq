@@ -1,0 +1,79 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.userBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatarWrapper {
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.avatar {
+  object-fit: cover;
+}
+
+.avatarFallback {
+  width: 35px;
+  height: 35px;
+  fill: #2d4838;
+  stroke: #2d4838;
+}
+.name {
+  color: #374f42;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0%;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.divider {
+  background-color: #374f42;
+  width: 1px;
+  height: 39px;
+}
+
+.logoutBtn {
+  width: 24px;
+  height: 28px;
+  padding-bottom: 4px;
+  display: flex;
+  justify-content: center;
+}
+
+.logoutIcon {
+  width: 24px;
+  height: 24px;
+  stroke: #2d4838;
+  fill: none;
+}
+
+@media only screen and (min-width: 768px) {
+  .container {
+    height: 39px;
+  }
+  .userBox {
+    gap: 4px;
+  }
+  .avatarWrapper {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .userBox {
+    gap: 8px;
+  }
+}

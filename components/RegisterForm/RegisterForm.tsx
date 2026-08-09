@@ -50,33 +50,56 @@ export default function RegisterForm() {
     onSubmit: async (values) => {
       setSubmitError("");
 
+      const email = values.email.trim().toLowerCase();
+
       try {
-        const response = await fetch("/api/auth/register", {
+        // Спочатку реєструємо користувача.
+        const registerResponse = await fetch("/api/auth/register", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             username: values.username.trim(),
-            email: values.email.trim().toLowerCase(),
+            email,
             password: values.password,
           }),
         });
 
-        const responseData = (await response.json().catch(() => null)) as {
+        const registerData = (await registerResponse.json().catch(() => null)) as {
           message?: string;
         } | null;
 
-        if (!response.ok) {
-          if (response.status === 409) {
+        if (!registerResponse.ok) {
+          if (registerResponse.status === 409) {
             throw new Error("An account with this email is already registered.");
           }
 
           throw new Error(
-            responseData?.message ?? "Unable to create your account. Please try again.",
+            registerData?.message ?? "Unable to create your account. Please try again.",
           );
         }
 
+        // Після успішної реєстрації автоматично виконуємо login.
+        const loginResponse = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            email,
+            password: values.password,
+          }),
+        });
+
+        if (!loginResponse.ok) {
+          throw new Error(
+            "Your account was created, but automatic sign-in failed. Please log in.",
+          );
+        }
+
+        // Переходимо далі тільки після отримання сесії.
         router.push("/photo");
       } catch (error) {
         setSubmitError(

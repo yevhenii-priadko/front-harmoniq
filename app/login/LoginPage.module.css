@@ -1,7 +1,7 @@
 .main_content {
-    display: flex;
-    justify-content: center;
-    margin: 85px 31px;
+  display: flex;
+  justify-content: center;
+  margin: 85px 31px;
 }
 
 .form {
@@ -10,8 +10,10 @@
   flex-direction: column;
   border-radius: 32px;
   padding: 48px 32px;
+  width: 100%;
   max-width: 330px;
-  height: 408px;
+  max-height: 408px;
+  box-sizing: border-box;
 }
 
 .main_title {
@@ -43,10 +45,11 @@
 .field_from {
   border-radius: 8px;
   padding: 8px;
-  width: 266px;
+  width: 100%;
   height: 41px;
   border: 1px solid #9f9f9f;
   background-color: #f7fffb;
+  box-sizing: border-box;
 }
 
 .container_login_reg {
@@ -60,7 +63,7 @@
 .btn_login {
   border-radius: 64px;
   padding: 8px;
-  width: 266px;
+  width: 100%;
   height: 38px;
   background-color: #649179;
   font-weight: 700;
@@ -80,4 +83,48 @@
   font-weight: 700;
   text-decoration: underline;
   text-decoration-skip-ink: none;
+}
+
+@media screen and (min-width: 375px) {
+  .main_content {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .form {
+    width: 330px;
+  }
+
+  .field_from,
+  .btn_login {
+    width: 266px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .main_content {
+    margin: 232px auto;
+  }
+
+  .form {
+    width: 100%;
+    max-width: 522px;
+    min-height: 408px;
+  }
+
+  .field_from {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .main_content {
+    margin: 172px auto 152px;
+  }
+
+  .form {
+    width: 100%;
+    max-width: 392px;
+    min-height: 408px;
+  }
 }

@@ -1,10 +1,10 @@
 // import Link from "next/link";
 // import css from "./PopularArticles.module.css";
-// //mport ArticlesItem from "@/components/ArticlesItem/ArticlesItem";
+// // import ArticlesItem from "@/components/ArticlesItem/ArticlesItem";
 
 // async function getPopularArticles() {
 //   const res = await fetch(
-//     `${process.env.NEXT_PUBLIC_API_URL}/articles?sortBy=rate&sortOrder=desc&limit=6`,
+//     `${process.env.BACKEND_URL}/articles?sortBy=rate&sortOrder=desc&limit=4`,
 //     { cache: "no-store" },
 //   );
 //   if (!res.ok) throw new Error("Failed to fetch articles");
@@ -14,6 +14,7 @@
 
 // export default async function PopularArticles() {
 //   const articles = await getPopularArticles();
+
 //   return (
 //     <section id="popular" className={css.popular}>
 //       <div className={css.heading}>
@@ -22,11 +23,13 @@
 //           Go to all Articles
 //         </Link>
 //       </div>
-//       <ul className={css.list}>
+//       {/* <ul className={css.list}>
 //         {articles.map((article) => (
-//           <li key={article._id}>{/* <ArticlesItem article={article} /> */}</li>
+//           <li className={css.listItem} key={article._id}>
+//             <ArticlesItem article={article} />
+//           </li>
 //         ))}
-//       </ul>
+//       </ul> */}
 //     </section>
 //   );
 // }

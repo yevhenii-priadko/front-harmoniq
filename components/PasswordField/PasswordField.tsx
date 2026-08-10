@@ -11,6 +11,7 @@ type PasswordFieldProps = {
   value: string;
   placeholder?: string;
   autoComplete?: string;
+  minLength?: number;
   maxLength?: number;
   error?: string;
   helper?: ReactNode;
@@ -25,6 +26,7 @@ export default function PasswordField({
   value,
   placeholder,
   autoComplete,
+  minLength,
   maxLength,
   error,
   helper,
@@ -50,6 +52,7 @@ export default function PasswordField({
           value={value}
           placeholder={placeholder}
           autoComplete={autoComplete}
+          minLength={minLength}
           maxLength={maxLength}
           aria-invalid={Boolean(error)}
           aria-describedby={messageId}

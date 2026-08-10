@@ -127,6 +127,10 @@
     opacity 0.2s ease;
 }
 
+.disabled{
+  
+}
+
 @media (min-width: 768px) {
   .container {
     padding: 48px 32px;

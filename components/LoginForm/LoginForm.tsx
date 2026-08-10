@@ -4,14 +4,16 @@ import { useFormik } from 'formik';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
-import css from './LoginForm.module.css';
 import PasswordField from '@/components/PasswordField/PasswordField';
 import Button from '@/components/Button/Button';
+import ErrorNotification from '../ErrorNotification/ErrorNotification';
+import FormField from '../FormField/FormField';
+import css from './LoginForm.module.css';
 
 const loginSchema = Yup.object({
   email: Yup.string()
     .trim()
-    .email('Email a valid email addresss')
+    .email('Enter a valid email address')
     .max(64, 'Email must contain no more than 64 characters')
     .required('Email is required'),
   password: Yup.string()
@@ -50,9 +52,14 @@ export default function LoginPage() {
         });
 
         if (!loginResponse.ok) {
-          throw new Error('');
+          const data = await loginResponse.json().catch(() => null);
+
+          throw new Error(
+            data?.message ?? 'User not found or password is incorrect.',
+          );
         }
-        router.push('/authors');
+
+        router.replace('/authors');
       } catch (error) {
         setSubmitError(
           error instanceof Error
@@ -65,35 +72,40 @@ export default function LoginPage() {
 
   return (
     <>
-      {submitError && (
-        <div className={css.notification} role="alert">
-          <p>{submitError}</p>
+      <ErrorNotification
+        message={submitError}
+        onClose={() => setSubmitError('')}
+      />
 
-          <button
-            className={css.notificationClose}
-            type="button"
-            aria-label="Close error message"
-            onClick={() => setSubmitError('')}
-          >
-            <svg className={css.closeIcon} aria-hidden="true">
-              <use href="/sprite.svg#icon-close-small" />
-            </svg>
-          </button>
-        </div>
-      )}
-      <form noValidate className="" onSubmit={formik.handleSubmit}>
+      <form noValidate className={css.form} onSubmit={formik.handleSubmit}>
+        <FormField
+          id="email"
+          name="email"
+          type="email"
+          label="Enter your email address"
+          placeholder="email@gmail.com"
+          autoComplete="email"
+          maxLength={64}
+          value={formik.values.email}
+          error={formik.touched.email ? formik.errors.email : undefined}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
         <PasswordField
           id="password"
           name="password"
           label="Enter a password"
           placeholder="***********"
+          minLength={8}
           maxLength={64}
+          autoComplete="current-password"
           value={formik.values.password}
+          error={formik.touched.password ? formik.errors.password : undefined}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
-
         <Button
+          className={css.submitbtn}
           type="submit"
           fullWidth
           isLoading={formik.isSubmitting}
@@ -105,38 +117,4 @@ export default function LoginPage() {
       </form>
     </>
   );
-  // <Form className="" onSubmit={() => {}}>
-  //   <div className={css.main_container_form}>
-  //     <div className={css.container_form}>
-  //       <label className={css.label_form} htmlFor="email">
-  //         Enter your email address
-  //       </label>
-  //       <Field
-  //         id="email"
-  //         type="email"
-  //         name="email"
-  //         className={css.field_from}
-  //         placeholder="email@gmail.com"
-  //         required
-  //       />
-  //     </div>
-  //     <div className={css.container_form}>
-  //       <label className={css.label_form} htmlFor="password">
-  //         Enter a password
-  //       </label>
-  //       <Field
-  //         id="password"
-  //         type="password"
-  //         name="password"
-  //         className={css.field_from}
-  //         required
-  //       />
-  //     </div>
-  //   </div>
-  //   <div className={css.container_login_reg}>
-  //     <button className={css.btn_login} type="submit">
-  //       Login
-  //     </button>
-  //   </div>
-  // </Form>
 }

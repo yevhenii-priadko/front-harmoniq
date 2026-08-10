@@ -3,6 +3,8 @@
 import Image from "next/image";
 import css from "./UserBar.module.css";
 import { useState } from "react";
+import ErrorNotification from "@/components/ErrorNotification/ErrorNotification";
+import LogoutModal from "@/components/LogoutModal/LogoutModal";
 
 interface User {
     username?: string;
@@ -15,46 +17,58 @@ interface UserBarProps {
 
 export default function UserBar({ user }: UserBarProps) {
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+    const [logoutError, setLogoutError] = useState("");
 
     const handleOpenModal = () => setIsLogoutModalOpen(true);
     const handleCloseModal = () => setIsLogoutModalOpen(false);
     return (
-        <div className={css.container}>
-            <div className={css.userBox}>
-                <div className={css.avatarWrapper}>
-                    {user?.avatar ? (
-                        <Image
-                            src={user.avatar}
-                            alt="user avatar"
-                            width={40}
-                            height={40}
-                            priority
-                            className={css.avatar}
-                        />
-                    ) : (
-                        <svg className={css.avatarFallback} width={40} height={40}>
-                            <use href="/sprite.svg#icon-user" />
-                        </svg>
-                    )}
+        <>
+            <div className={css.container}>
+                <div className={css.userBox}>
+                    <div className={css.avatarWrapper}>
+                        {user?.avatar ? (
+                            <Image
+                                src={user.avatar}
+                                alt="user avatar"
+                                width={40}
+                                height={40}
+                                priority
+                                className={css.avatar}
+                            />
+                        ) : (
+                            <svg className={css.avatarFallback} width={40} height={40}>
+                                <use href="/sprite.svg#icon-user" />
+                            </svg>
+                        )}
+                    </div>
+                    <p className={css.name}>{user.username || "User"}</p>
                 </div>
-                <p className={css.name}>{user.username || "User"}</p>
+
+                <div className={css.divider} />
+
+                <button
+                    type="button"
+                    className={css.logoutBtn}
+                    onClick={handleOpenModal}
+                    aria-label="Log out"
+                >
+                    <svg className={css.logoutIcon} width={24} height={24}>
+                        <use href="/sprite.svg#icon-log-out" />
+                    </svg>
+                </button>
             </div>
 
-            <div className={css.divider} />
+            <ErrorNotification
+                message={logoutError}
+                onClose={() => setLogoutError("")}
+            />
 
-            <button
-                type="button"
-                className={css.logoutBtn}
-                onClick={handleOpenModal}
-                aria-label="Log out"
-            >
-                <svg className={css.logoutIcon} width={24} height={24}>
-                    <use href="/sprite.svg#icon-log-out" />
-                </svg>
-            </button>
-            {/* {isLogoutModalOpen && (
-                <LogoutModal onClose={handleCloseModal} />
-            )} */}
-        </div>
+            {isLogoutModalOpen && (
+                <LogoutModal
+                    onClose={handleCloseModal}
+                    onError={setLogoutError}
+                />
+            )}
+        </>
     );
 }

@@ -1,5 +1,32 @@
 import { api } from './api';
 
+export type Author = {
+  _id: string;
+  username?: string;
+  email?: string;
+  avatar?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type AuthorsResponse = {
+  page: number;
+  perPage: number;
+  totalUsers: number;
+  totalPages: number;
+  users: Author[];
+};
+
+export const fetchAuthorsClient = async (
+  page = 1,
+  perPage = 20,
+): Promise<AuthorsResponse> => {
+  const res = await api.get<AuthorsResponse>('/authors', {
+    params: { page, perPage },
+  });
+  return res.data;
+};
+
 // Реальна відповідь бекенду (перевірено на живому сервері 09.08):
 // { page, perPage, totalArticles, totalPages, articles: [...] }
 export type ArticlesResponse = {

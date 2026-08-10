@@ -1,0 +1,220 @@
+.header {
+  width: 100%;
+  background-color: var(--light-green);
+}
+
+/* MOBILE — від 320px */
+.inner {
+  height: 74px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.desktopNav {
+  display: none;
+}
+
+.mobileActions {
+  display: flex;
+  align-items: center;
+}
+
+.tabletJoin {
+  display: none;
+}
+
+/* Burger */
+.burger {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  cursor: pointer;
+}
+
+.burger span {
+  display: block;
+
+  width: 24px;
+  height: 2px;
+
+  background-color: var(--green-darker);
+  border-radius: 2px;
+}
+
+/* Mobile menu */
+.mobileMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  padding: 16px 0 24px;
+}
+
+.mobileLink {
+  width: fit-content;
+
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+
+  color: var(--green-darker);
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+.mobileLink:hover,
+.mobileLink:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.mobileJoin {
+  width: fit-content;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 7px 16px;
+
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+
+  color: var(--white);
+  background-color: var(--green);
+
+  border-radius: 20px;
+  cursor: pointer;
+
+  transition: background-color 200ms ease;
+}
+
+.mobileJoin:hover,
+.mobileJoin:focus-visible {
+  background-color: var(--green-darker);
+}
+
+/* TABLET — від 768px */
+@media (min-width: 768px) {
+  .inner {
+    height: 74px;
+  }
+
+  .mobileActions {
+    gap: 16px;
+  }
+
+  .tabletJoin {
+    height: 32px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 14px;
+
+    font-family: var(--font-family);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 16px;
+
+    color: var(--white);
+    background-color: var(--green);
+
+    border-radius: 20px;
+    cursor: pointer;
+
+    transition: background-color 200ms ease;
+  }
+
+  .tabletJoin:hover,
+  .tabletJoin:focus-visible {
+    background-color: var(--green-darker);
+  }
+
+  .burger {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* DESKTOP — від 1440px */
+@media (min-width: 1440px) {
+  .inner {
+    height: 74px;
+  }
+
+  .desktopNav {
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .mobileActions,
+  .mobileMenu {
+    display: none;
+  }
+
+  .link {
+    display: inline-flex;
+    align-items: center;
+
+    font-family: var(--font-family);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+
+    color: var(--green-darker);
+    text-decoration: none;
+
+    cursor: pointer;
+  }
+
+  .link:hover,
+  .link:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .join {
+    width: 100px;
+    height: 46px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: var(--font-family);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 22px;
+
+    color: var(--white);
+    background-color: var(--green);
+
+    border-radius: 20px;
+    cursor: pointer;
+
+    transition: background-color 200ms ease;
+  }
+
+  .join:hover,
+  .join:focus-visible {
+    background-color: var(--green-darker);
+  }
+}

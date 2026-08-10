@@ -1,0 +1,18 @@
+
+.logo {
+  display: flex;
+  align-items: center;
+
+  width: 165px;
+  height: 46px;
+
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.logoImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

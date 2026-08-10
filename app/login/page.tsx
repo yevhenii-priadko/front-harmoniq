@@ -1,5 +1,15 @@
+import { Metadata } from 'next';
 import css from './LoginPage.module.css';
 import LoginForm from '@/components/LoginForm/LoginForm';
+
+export const metadata: Metadata = {
+  title: 'Login | Harmoniq',
+  description: 'Login your Harmoniq account.',
+  openGraph: {
+    title: 'Login | Harmoniq',
+    description: 'Login your Harmoniq account.',
+  },
+};
 
 export default function LoginPage() {
   return (

@@ -1,0 +1,95 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.userBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatarWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  fill: var(--green-darker);
+  stroke: var(--green-darker);
+  box-sizing: border-box;
+}
+
+.name {
+  color: var(--green-darker);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: normal;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.divider {
+  background-color: var(--green-darker);
+  width: 1px;
+  height: 39px;
+}
+
+.logoutBtn {
+  width: 24px;
+  height: 28px;
+  padding-bottom: 4px;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.logoutIcon {
+  width: 24px;
+  height: 24px;
+  stroke: var(--green-darker);
+  stroke-width: 0.5;
+  fill: none;
+  transition: stroke 200ms ease;
+}
+
+.logoutBtn:hover .logoutIcon,
+.logoutBtn:focus-visible .logoutIcon {
+  stroke: var(--red);
+}
+
+@media only screen and (min-width: 768px) {
+  .container {
+    height: 39px;
+  }
+  .userBox {
+    gap: 4px;
+  }
+  .avatarWrapper {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .userBox {
+    gap: 8px;
+  }
+}

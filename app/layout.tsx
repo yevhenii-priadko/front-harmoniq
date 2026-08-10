@@ -1,6 +1,9 @@
 import { Manrope, Merienda } from "next/font/google";
 import "modern-normalize/modern-normalize.css";
 import "@/styles/globals.css";
+import Footer from "@/components/Footer/Footer";
+import Header from "@/components/Header/Header";
+
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -21,10 +24,13 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="uk" className={`${manrope.variable} ${merienda.variable}`}>
+    <html lang="uk" className={`${manrope.variable} ${merienda.variable}`} data-scroll-behavior="smooth">
       <body>
-        {/* TODO: Header, Footer, Layout-компонент */}
-        {children}
+        <Header/>
+        <main>
+          {children}
+        </main>
+        <Footer/>
       </body>
     </html>
   );

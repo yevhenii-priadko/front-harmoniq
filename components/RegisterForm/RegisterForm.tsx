@@ -8,6 +8,7 @@ import Button from "@/components/Button/Button";
 import FormField from "@/components/FormField/FormField";
 import PasswordField from "@/components/PasswordField/PasswordField";
 import PasswordStrengthBar from "@/components/PasswordStrengthBar/PasswordStrengthBar";
+import ErrorNotification from "@/components/ErrorNotification/ErrorNotification";
 import styles from "./RegisterForm.module.css";
 
 const registerSchema = Yup.object({
@@ -113,22 +114,7 @@ export default function RegisterForm() {
 
   return (
     <>
-      {submitError && (
-        <div className={styles.notification} role="alert">
-          <p>{submitError}</p>
-
-          <button
-            className={styles.notificationClose}
-            type="button"
-            aria-label="Close error message"
-            onClick={() => setSubmitError("")}
-          >
-            <svg className={styles.closeIcon} aria-hidden="true">
-              <use href="/sprite.svg#icon-close-small" />
-            </svg>
-          </button>
-        </div>
-      )}
+      <ErrorNotification message={submitError} onClose={() => setSubmitError("")} />
 
       <form className={styles.form} noValidate onSubmit={formik.handleSubmit}>
         <FormField

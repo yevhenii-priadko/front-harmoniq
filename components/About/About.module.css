@@ -3,6 +3,11 @@
   margin: 0 auto;
 }
 
+.wrapper {
+  max-width: 393px;
+  margin: 0 auto;
+}
+
 .title {
   font-weight: 700;
   font-size: 32px;
@@ -56,6 +61,9 @@
 }
 
 @media screen and (min-width: 768px) {
+  .wrapper {
+    max-width: 704px;
+  }
   .mobileImg,
   .deskImg {
     display: none;
@@ -79,6 +87,9 @@
 }
 
 @media screen and (min-width: 1440px) {
+  .wrapper {
+    max-width: 1225px;
+  }
   .mobileImg,
   .tabletImg {
     display: none;

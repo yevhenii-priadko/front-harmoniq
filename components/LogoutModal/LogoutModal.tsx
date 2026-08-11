@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Button/Button";
+import { useAuthStore } from "@/lib/store/authStore";
 import css from "./LogoutModal.module.css";
 
 type LogoutModalProps = {
@@ -14,6 +15,7 @@ type LogoutModalProps = {
 export default function LogoutModal({ onClose, onError }: LogoutModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const clearAuth = useAuthStore((state) => state.clearAuth);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -56,6 +58,10 @@ export default function LogoutModal({ onClose, onError }: LogoutModalProps) {
     } catch {
       onError("Authentication server is unavailable.");
     } finally {
+      // Незалежно від відповіді бекенду — розлогінюємо "на клієнті" одразу,
+      // не чекаючи ручного reload/AuthSessionChecker (див. вимогу в ТЗ:
+      // "Незалежно від відповіді ... слід розлогінити 'на клієнті'").
+      clearAuth();
       setIsLoading(false);
       onClose();
       router.push("/");
@@ -64,11 +70,7 @@ export default function LogoutModal({ onClose, onError }: LogoutModalProps) {
   };
 
   return (
-    <div
-      className={css.backdrop}
-      role="presentation"
-      onMouseDown={handleBackdropClick}
-    >
+    <div className={css.backdrop} role="presentation" onMouseDown={handleBackdropClick}>
       <div
         className={css.modal}
         role="dialog"

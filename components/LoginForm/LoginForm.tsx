@@ -9,6 +9,7 @@ import Button from "@/components/Button/Button";
 import ErrorNotification from "../ErrorNotification/ErrorNotification";
 import FormField from "../FormField/FormField";
 import css from "./LoginForm.module.css";
+import { useAuthStore } from "@/lib/store/authStore";
 
 const loginSchema = Yup.object({
   email: Yup.string()
@@ -51,10 +52,14 @@ export default function LoginPage() {
           }),
         });
 
-        if (!loginResponse.ok) {
-          const data = await loginResponse.json().catch(() => null);
+        const data = await loginResponse.json().catch(() => null);
 
+        if (!loginResponse.ok) {
           throw new Error(data?.message ?? "User not found or password is incorrect.");
+        }
+
+        if (data?.user) {
+          useAuthStore.getState().setUser(data.user);
         }
 
         router.replace("/");

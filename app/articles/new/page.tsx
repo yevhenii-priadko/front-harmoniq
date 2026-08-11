@@ -1,35 +1,35 @@
 "use client";
 
-import { useId } from "react";
+import { ChangeEvent, useId, useState } from "react";
+import Image from "next/image";
 import css from "./NewArticlePage.module.css";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { ArticleFormValues, createArticle } from "@/lib/api/clientApi";
+import { createArticle } from "@/lib/api/clientApi";
 import { useAuthStore } from "@/lib/store/authStore";
+
+const MAX_FILE_SIZE = 1024 * 1024; // 1MB, як вимагає ТЗ
 
 const ArticleSchema = Yup.object({
   title: Yup.string()
     .trim()
     .min(3, `Too short!`)
-    .max(48, `Too long!`) // ⚠️ бекенд дозволяє макс 48, не 50
+    .max(48, `Too long!`) // бекенд дозволяє макс 48
     .required("Required"),
   description: Yup.string()
     .trim()
     .min(100, `Too short!`)
     .max(4000, `Too long!`)
     .required("Required"),
-  // ⚠️ ТИМЧАСОВО: бекенд поки не приймає файл, лише URL-рядок (див.
-  // коментар у lib/api/clientApi.ts) — тому це звичайний текстовий інпут,
-  // а не file upload.
-  photo: Yup.string().url("Enter a valid image URL").required("Required"),
+  photo: Yup.mixed<File>().required("Required"),
 });
 
 interface ArticleForm {
   title: string;
   description: string;
-  photo: string;
+  photo: File | null;
 }
 
 export default function NewArticlePage() {
@@ -38,14 +38,23 @@ export default function NewArticlePage() {
   const fieldId = useId();
   const username = useAuthStore((state) => state.user?.username ?? "Unknown");
 
+  const [preview, setPreview] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState("");
+
   const initialValues: ArticleForm = {
     title: ``,
     description: ``,
-    photo: "",
+    photo: null,
   };
 
   const mutation = useMutation({
-    mutationFn: (newArticle: ArticleFormValues) => createArticle(newArticle),
+    mutationFn: (newArticle: {
+      title: string;
+      description: string;
+      date: string;
+      author: string;
+      photo: File;
+    }) => createArticle(newArticle),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [`articles`] });
       router.push(`/articles/${data._id}`);
@@ -56,6 +65,8 @@ export default function NewArticlePage() {
     values: ArticleForm,
     { resetForm }: FormikHelpers<ArticleForm>,
   ) => {
+    if (!values.photo) return;
+
     try {
       await mutation.mutateAsync({
         title: values.title,
@@ -67,6 +78,7 @@ export default function NewArticlePage() {
       });
 
       resetForm();
+      setPreview(null);
     } catch (err) {
       console.error("Article submission failed", err);
     }
@@ -81,24 +93,61 @@ export default function NewArticlePage() {
         validationSchema={ArticleSchema}
         validateOnMount
       >
-        {({ isValid, dirty }) => {
+        {({ isValid, dirty, setFieldValue }) => {
           const isDisabled = !isValid || !dirty;
+
+          const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+            const file = event.target.files?.[0];
+            setPhotoError("");
+
+            if (!file) return;
+
+            if (!file.type.startsWith("image/")) {
+              setPhotoError("Only images are allowed.");
+              setFieldValue("photo", null);
+              return;
+            }
+
+            if (file.size > MAX_FILE_SIZE) {
+              setPhotoError("Maximum file size is 1 MB.");
+              setFieldValue("photo", null);
+              return;
+            }
+
+            setFieldValue("photo", file);
+
+            const reader = new FileReader();
+            reader.onloadend = () => setPreview(reader.result as string);
+            reader.readAsDataURL(file);
+          };
 
           return (
             <Form className={css.form}>
               <div className={css.wrapper}>
-                <div className={css.titleWrapper}>
-                  <label className={css.label} htmlFor={`${fieldId}-photo`}>
-                    Photo URL
-                  </label>
-                  <Field
-                    className={css.inputTitle}
-                    type="text"
-                    name="photo"
-                    id={`${fieldId}-photo`}
-                    placeholder="https://..."
-                  />
-                </div>
+                <input
+                  type="file"
+                  id={`${fieldId}-image`}
+                  accept="image/*"
+                  className={css.hiddenInput}
+                  onChange={handleFileChange}
+                />
+
+                <label htmlFor={`${fieldId}-image`} className={css.uploadLabel}>
+                  {preview ? (
+                    <Image
+                      src={preview}
+                      alt="Preview"
+                      className={css.previewImage}
+                      width={300}
+                      height={200}
+                    />
+                  ) : (
+                    <svg width="98" height="82" className={css.cameraIcon}>
+                      <use href="/sprite.svg#icon-camera"></use>
+                    </svg>
+                  )}
+                </label>
+                {photoError && <p className={css.error}>{photoError}</p>}
 
                 <div className={css.titleWrapper}>
                   <label className={css.label} htmlFor={`${fieldId}-title`}>

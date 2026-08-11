@@ -1,4 +1,4 @@
-// import ArticlesItem from "@/components/ArticlesItem/ArticlesItem";
+import ArticlesItem from "@/components/ArticlesItem/ArticlesItem";
 
 type Article = {
   _id: string;
@@ -8,6 +8,11 @@ type Article = {
   userId: string;
   createdAt: string;
   updatedAt: string;
+  // ⚠️ date/author додані в Mongoose-модель нещодавно (перевірено вживу через
+  // тестовий POST /articles) — для СТАРИХ статей, створених до цієї зміни,
+  // цих полів у відповіді не буде, тому позначаємо як optional і даємо fallback.
+  date?: string;
+  author?: string;
 };
 
 type ArticlesListProps = {
@@ -22,7 +27,14 @@ export default function ArticlesList({ articles }: ArticlesListProps) {
   return (
     <ul>
       {articles.map((article) => (
-        <li key={article._id}>{/* <ArticlesItem/> */}</li>
+        <ArticlesItem
+          key={article._id}
+          id={article._id}
+          title={article.title}
+          description={article.description}
+          photo={article.photo}
+          userName={article.author ?? "Harmoniq author"}
+        />
       ))}
     </ul>
   );

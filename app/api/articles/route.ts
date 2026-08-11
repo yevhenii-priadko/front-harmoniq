@@ -1,17 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { isAxiosError } from 'axios';
-import { api } from '../api';
-import { logErrorResponse } from '../_utils/utils';
+import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { isAxiosError } from "axios";
+import { api } from "../api";
+import { logErrorResponse } from "../_utils/utils";
 
+// GET прокидує ВСІ query-параметри як є (page/perPage/filter/sortOrder тощо) —
+// так фронту не треба перелічувати кожен параметр окремо, і фільтр
+// "Popular"/"All" з ArticlesPage (див. backend PR #13) працює без додаткових правок тут.
 export async function GET(request: NextRequest) {
   try {
     const cookieStore = await cookies();
-    const page = Number(request.nextUrl.searchParams.get('page') ?? 1);
-    const perPage = Number(request.nextUrl.searchParams.get('perPage') ?? 12);
+    const searchParams = request.nextUrl.searchParams.toString();
 
-    const res = await api.get('/articles', {
-      params: { page, perPage },
+    const res = await api.get(`/articles${searchParams ? `?${searchParams}` : ""}`, {
       headers: {
         Cookie: cookieStore.toString(),
       },
@@ -27,7 +28,7 @@ export async function GET(request: NextRequest) {
       );
     }
     logErrorResponse({ message: (error as Error).message });
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -38,10 +39,10 @@ export async function POST(request: NextRequest) {
     const cookieStore = await cookies();
     const body = await request.json();
 
-    const res = await api.post('/articles', body, {
+    const res = await api.post("/articles", body, {
       headers: {
         Cookie: cookieStore.toString(),
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -55,6 +56,6 @@ export async function POST(request: NextRequest) {
       );
     }
     logErrorResponse({ message: (error as Error).message });
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

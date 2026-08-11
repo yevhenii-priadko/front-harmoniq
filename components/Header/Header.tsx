@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import UserBar from '../UserBar/UserBar';
+import { useAuthStore } from '@/lib/store/authStore';
 import css from './Header.module.css';
 
 type NavItem = {
@@ -24,20 +25,12 @@ const AUTH_NAV: NavItem[] = [
   { href: '/profile', label: 'My Profile' },
 ];
 
-type HeaderProps = {
-  // TODO: замінити на реальні дані з auth-стору (Zustand), коли він буде готовий.
-  // Зараз Header — суто презентаційний компонент, значення передаються пропсами,
-  // щоб не тягнути сюди залежність від ще не реалізованого стору.
-  isAuthenticated?: boolean;
-  user?: {
-    name: string;
-    avatarUrl?: string | null;
-  } | null;
-};
-
-function Header({ isAuthenticated = false, user = null }: HeaderProps) {
+function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   // Закриваємо бургер-меню при переході на іншу сторінку.
   // Патерн "adjusting state during render" замість useEffect — так React
@@ -101,7 +94,7 @@ function Header({ isAuthenticated = false, user = null }: HeaderProps) {
 
             {/* UserBar — лише Desktop, лише авторизований, закрите меню */}
             {isAuthenticated && user && (
-              <UserBar user={{ username: user.name, avatar: user.avatarUrl ?? undefined }} />
+              <UserBar user={{ username: user.username, avatar: user.avatar ?? undefined }} />
             )}
 
             {/* Бургер-кнопка — схована на Desktop */}

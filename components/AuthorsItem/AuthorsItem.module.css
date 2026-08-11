@@ -1,0 +1,69 @@
+.item {
+  min-width: 0;
+}
+
+.card {
+  display: block;
+  height: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  transition:
+    background-color 200ms ease,
+    transform 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.card:hover {
+  background-color: var(--light-green);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgb(7 7 33 / 10%);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 4px;
+}
+
+.avatarBox {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: var(--light-green);
+}
+
+.avatar,
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+}
+
+.avatar {
+  object-fit: cover;
+}
+
+.avatarFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green-darker);
+  font-size: 48px;
+  font-weight: 800;
+}
+
+.name {
+  margin-top: 16px;
+  color: var(--black);
+  font-family: var(--font-family);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+@media screen and (min-width: 768px) {
+  .name {
+    font-size: 24px;
+  }
+}

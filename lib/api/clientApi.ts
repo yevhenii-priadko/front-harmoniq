@@ -22,7 +22,7 @@ export const fetchAuthorsClient = async (
   page = 1,
   perPage = 20,
 ): Promise<AuthorsResponse> => {
-  const res = await api.get<AuthorsResponse>('/authors', {
+  const res = await api.get<AuthorsResponse>("/authors", {
     params: { page, perPage },
   });
   return res.data;
@@ -89,9 +89,24 @@ export const fetchArticlesClient = async (
 };
 
 // Створення статті — AddArticleForm, кнопка Publish.
-// Працює вже зараз, бо бекенд приймає звичайний JSON з photo-рядком.
-export const createArticle = async (values: ArticleFormValues): Promise<Article> => {
-  const res = await api.post<Article>("/articles", values);
+
+export type CreateArticlePayload = {
+  title: string;
+  description: string;
+  date: string;
+  author: string;
+  photo: File;
+};
+
+export const createArticle = async (values: CreateArticlePayload): Promise<Article> => {
+  const formData = new FormData();
+  formData.append("title", values.title);
+  formData.append("description", values.description);
+  formData.append("date", values.date);
+  formData.append("author", values.author);
+  formData.append("photo", values.photo);
+
+  const res = await api.post<Article>("/articles", formData);
   return res.data;
 };
 

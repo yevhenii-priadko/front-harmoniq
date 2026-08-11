@@ -1,10 +1,10 @@
 .form {
   display: flex;
-  width: 100%;
   flex-direction: column;
+  width: 100%;
   gap: 1px;
 }
 
-.submitButton {
-  margin-top: 10px;
+.submitbtn {
+  margin-top: 11px;
 }

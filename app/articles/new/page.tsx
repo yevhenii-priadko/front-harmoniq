@@ -3,10 +3,11 @@
 import { ChangeEvent, useId, useState } from "react";
 import css from "./NewArticlePage.module.css";
 import Image from "next/image";
-import { Field, FieldProps, Form, Formik } from "formik";
+import { Field, FieldProps, Form, Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArticleFormValues, createArticle } from "@/lib/api/clientApi";
+import { useAuthStore } from "@/lib/store/authStore";
 
 const ArticleSchema = Yup.object({
   title: Yup.string()
@@ -19,7 +20,7 @@ const ArticleSchema = Yup.object({
     .min(100, `Too short!`)
     .max(4000, `Too long!`)
     .required("Required"),
-  image: Yup.string().required("Required"),
+  photo: Yup.string().required("Required"),
 });
 
 interface ArticleForm {
@@ -31,6 +32,7 @@ interface ArticleForm {
 export default function NewArticlePage() {
   const queryClient = useQueryClient();
   const fieldId = useId();
+  const username = useAuthStore((state) => state.user?.username ?? "Unknown");
 
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -60,14 +62,24 @@ export default function NewArticlePage() {
     },
   });
 
-  const handleSubmit = (values: ArticleForm) => {
-    mutation.mutate({
-      title: values.title,
-      description: values.description,
-      date: new Date().toISOString(),
-      author: "",
-      photo: values.photo,
-    });
+  const handleSubmit = async (
+    values: ArticleForm,
+    { resetForm }: FormikHelpers<ArticleForm>,
+  ) => {
+    try {
+      await mutation.mutateAsync({
+        title: values.title,
+        description: values.description,
+        date: new Date().toISOString(),
+        author: username,
+        photo: values.photo,
+      });
+
+      resetForm();
+      setPreview(null);
+    } catch (err) {
+      console.error("Article submission failed", err);
+    }
   };
 
   return (
@@ -85,7 +97,7 @@ export default function NewArticlePage() {
           return (
             <Form className={css.form}>
               <div className={css.wrapper}>
-                <Field name="image">
+                <Field name="photo">
                   {({ form }: FieldProps) => (
                     <input
                       type="file"
@@ -94,8 +106,14 @@ export default function NewArticlePage() {
                       className={css.hiddenInput}
                       onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         if (e.target.files && e.target.files[0]) {
-                          form.setFieldValue("image", e.target.files[0]);
-                          handleFileChange(e);
+                          const file = e.target.files[0];
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            const dataUrl = reader.result as string;
+                            setPreview(dataUrl);
+                            form.setFieldValue("photo", dataUrl);
+                          };
+                          reader.readAsDataURL(file);
                         }
                       }}
                     />

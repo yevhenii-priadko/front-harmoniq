@@ -1,0 +1,120 @@
+.backdrop {
+  position: fixed;
+  z-index: 900;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background-color: rgb(7 7 33 / 45%);
+}
+
+.modal {
+  position: relative;
+  width: min(100%, 360px);
+  border-radius: 8px;
+  background-color: var(--white);
+  padding: 56px 24px 24px;
+  color: var(--black);
+  box-shadow: 0 18px 48px rgb(7 7 33 / 22%);
+}
+
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  color: var(--green-darker);
+  transition: color 200ms ease;
+}
+
+.closeButton:hover,
+.closeButton:focus-visible {
+  color: var(--red);
+}
+
+.closeButton:focus-visible,
+.cancelButton:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+
+.closeIcon {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+}
+
+.content {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.title {
+  color: var(--green-darker);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.14;
+}
+
+.description {
+  color: var(--gray);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.actions {
+  display: grid;
+  gap: 12px;
+}
+
+.logoutButton {
+  min-width: 100%;
+}
+
+.cancelButton {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--green-darker);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 22px;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    opacity 200ms ease;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background-color: var(--light-green);
+}
+
+.cancelButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media (min-width: 768px) {
+  .modal {
+    width: 420px;
+    padding: 64px 32px 32px;
+  }
+
+  .actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .logoutButton {
+    min-width: 0;
+  }
+}

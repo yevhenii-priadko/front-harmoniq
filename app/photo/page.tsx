@@ -1,8 +1,10 @@
+import UploadForm from "@/components/UploadForm/UploadForm";
+import styles from "./PhotoPage.module.css";
+
 export default function PhotoPage() {
   return (
-    <div>
-      <h1>Upload your photo</h1>
-      {/* TODO: UploadForm */}
-    </div>
+    <section className={styles.page} aria-label="Upload profile photo">
+      <UploadForm />
+    </section>
   );
 }

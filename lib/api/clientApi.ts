@@ -1,4 +1,32 @@
-import { api } from './api';
+import { api } from "./api";
+import { isAxiosError } from "axios";
+
+export type Author = {
+  _id: string;
+  username?: string;
+  email?: string;
+  avatar?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type AuthorsResponse = {
+  page: number;
+  perPage: number;
+  totalUsers: number;
+  totalPages: number;
+  users: Author[];
+};
+
+export const fetchAuthorsClient = async (
+  page = 1,
+  perPage = 20,
+): Promise<AuthorsResponse> => {
+  const res = await api.get<AuthorsResponse>('/authors', {
+    params: { page, perPage },
+  });
+  return res.data;
+};
 
 // Реальна відповідь бекенду (перевірено на живому сервері 09.08):
 // { page, perPage, totalArticles, totalPages, articles: [...] }
@@ -54,7 +82,7 @@ export const fetchArticlesClient = async (
   page = 1,
   perPage = 12,
 ): Promise<ArticlesResponse> => {
-  const res = await api.get<ArticlesResponse>('/articles', {
+  const res = await api.get<ArticlesResponse>("/articles", {
     params: { page, perPage },
   });
   return res.data;
@@ -63,7 +91,7 @@ export const fetchArticlesClient = async (
 // Створення статті — AddArticleForm, кнопка Publish.
 // Працює вже зараз, бо бекенд приймає звичайний JSON з photo-рядком.
 export const createArticle = async (values: ArticleFormValues): Promise<Article> => {
-  const res = await api.post<Article>('/articles', values);
+  const res = await api.post<Article>("/articles", values);
   return res.data;
 };
 
@@ -77,4 +105,23 @@ export const updateArticle = async (
 ): Promise<Article> => {
   const res = await api.patch<Article>(`/articles/${id}`, values);
   return res.data;
+};
+
+//Завантаження аватара користувача — UploadForm, кнопка Save.
+export const uploadAvatar = async (file: File): Promise<string> => {
+  const formData = new FormData();
+
+  formData.append("avatar", file);
+
+  try {
+    const { data } = await api.patch<{ url: string }>("/users/avatar", formData);
+
+    return data.url;
+  } catch (error) {
+    if (isAxiosError<{ message?: string }>(error)) {
+      throw new Error(error.response?.data?.message ?? "Unable to upload your photo.");
+    }
+
+    throw new Error("Unable to upload your photo.");
+  }
 };

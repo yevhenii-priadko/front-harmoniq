@@ -27,11 +27,19 @@ export async function POST() {
 
   const cookieStore = await cookies();
 
+  // ⚠️ cookieStore.toString() НЕ повертає валідний рядок "name=value; name2=value2" —
+  // збираємо вручну через getAll(), інакше бекенд не побачить сесію і не зможе
+  // коректно її інвалідувати (хоча куки на клієнті все одно очистяться нижче).
+  const cookieHeader = cookieStore
+    .getAll()
+    .map(({ name, value }) => `${name}=${value}`)
+    .join("; ");
+
   try {
     const apiRes = await fetch(`${BACKEND_URL}/auth/logout`, {
       method: "POST",
       headers: {
-        Cookie: cookieStore.toString(),
+        Cookie: cookieHeader,
       },
       cache: "no-store",
     });

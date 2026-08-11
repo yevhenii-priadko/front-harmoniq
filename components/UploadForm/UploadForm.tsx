@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/Button/Button";
 import ErrorNotification from "@/components/ErrorNotification/ErrorNotification";
 import { uploadAvatar } from "@/lib/api/clientApi";
+import { useAuthStore } from "@/lib/store/authStore";
 import styles from "./UploadForm.module.css";
 
 const MAX_FILE_SIZE = 1024 * 1024;
@@ -73,7 +74,12 @@ export default function UploadForm() {
 
     try {
       // Викликаємо функцію завантаження фото на сервер
-      await uploadAvatar(imageFile);
+      const avatarUrl = await uploadAvatar(imageFile);
+
+      // ⚠️ Без цього Header/UserBar не побачать новий аватар до наступного
+      // reload/AuthSessionChecker — той самий клас багу, що чинили в
+      // LoginForm (setUser) і RegisterForm (setUser).
+      useAuthStore.getState().updateUser({ avatar: avatarUrl });
 
       router.replace("/profile");
     } catch (error) {

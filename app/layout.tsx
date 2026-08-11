@@ -3,6 +3,7 @@ import "modern-normalize/modern-normalize.css";
 import "@/styles/globals.css";
 import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
+import AuthSessionChecker from "@/components/AuthSessionChecker/AuthSessionChecker";
 
 
 const manrope = Manrope({
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="uk" className={`${manrope.variable} ${merienda.variable}`} data-scroll-behavior="smooth">
       <body>
+        <AuthSessionChecker />
         <Header/>
         <main>
           {children}

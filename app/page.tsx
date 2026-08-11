@@ -7,7 +7,7 @@ export default function Home() {
     <main>
       <Hero />
       <About />
-      {/* <PopularArticles /> */}
+      <PopularArticles />
       <Creators />
     </main>
   );

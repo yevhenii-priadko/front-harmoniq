@@ -140,3 +140,31 @@ export const uploadAvatar = async (file: File): Promise<string> => {
     throw new Error("Unable to upload your photo.");
   }
 };
+
+//Отримання створених статей поточного користувача для ProfilePage
+export const fetchUserArticles = async (
+  userId: string,
+  page = 1,
+  perPage = 12,
+): Promise<ArticlesResponse> => {
+  const res = await api.get<ArticlesResponse>(
+    `/users/${userId}/articles`,
+    {
+      params: { page, perPage },
+    },
+  );
+
+  return res.data;
+};
+
+// Отримання збережених статей поточного користувача для ProfilePage
+export const fetchSavedArticles = async (
+  page = 1,
+  perPage = 12,
+): Promise<ArticlesResponse> => {
+  const res = await api.get<ArticlesResponse>('/users/me/saved-articles', {
+    params: { page, perPage },
+  });
+
+  return res.data;
+};

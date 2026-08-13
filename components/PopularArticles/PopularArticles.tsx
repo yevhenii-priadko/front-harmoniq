@@ -7,7 +7,7 @@ interface Article {
   title: string;
   description: string;
   photo: string;
-  userName: string;
+  author: string;
 }
 
 async function getPopularArticles() {
@@ -44,7 +44,7 @@ export default async function PopularArticles() {
               title={article.title}
               description={article.description}
               photo={article.photo}
-              userName={article.userName}
+              userName={article.author}
             />
           ))}
         </ul>

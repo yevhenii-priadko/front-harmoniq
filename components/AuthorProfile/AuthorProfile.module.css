@@ -1,0 +1,44 @@
+.profileWrapper {
+    margin: 32px 16px;
+}
+
+.authorHeader {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.avatarBox img {
+    width: 124px;
+    height: 124px;
+    border-radius: 50%;
+}
+
+.authorInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.name {
+    font-weight: 700;
+    font-size: 16px;
+line-height: 1;
+letter-spacing: 0%;
+}
+
+.articlesCount {
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.avatarFallback {
+    width: 124px;
+        height: 124px;
+        border-radius: 50%;
+        background-color: var(--light-green);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+}

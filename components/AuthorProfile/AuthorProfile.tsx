@@ -124,8 +124,11 @@ export default function AuthorProfile({
                         </div>
                     )}
                 </div>
-                <h1 className={css.name}>{name}</h1>
-                <p className={css.articlesCount}>{totalArticles} articles</p>
+                <div className={css.authorInfo}>
+                    <h1 className={css.name}>{name}</h1>
+                    <p className={css.articlesCount}>{totalArticles === 1 ? "1 article" : `${totalArticles} articles`}</p>
+                </div>
+
             </div>
 
             <div className={css.articlesSection} ref={listRef}>
@@ -134,7 +137,6 @@ export default function AuthorProfile({
                 ) : (
                     !isLoading && <p className={css.empty}>This author has no articles yet.</p>
                 )}
-
                 {hasArticles && canLoadMore && (
                     <div className={css.actions}>
                         <Button

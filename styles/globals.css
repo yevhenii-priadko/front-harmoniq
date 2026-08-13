@@ -27,6 +27,7 @@ html {
   scroll-behavior: smooth;
   padding: 0;
   margin: 0;
+  height: 100%;
 }
 
 body {
@@ -34,6 +35,14 @@ body {
   padding: 0;
   margin: 0;
   background-color: var(--white);
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
 }
 
 img,

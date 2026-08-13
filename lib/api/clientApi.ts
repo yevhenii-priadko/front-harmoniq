@@ -18,11 +18,31 @@ export type AuthorsResponse = {
   users: Author[];
 };
 
+export type UserResponse = {
+  user: Author;
+};
+
 export const fetchAuthorsClient = async (
   page = 1,
   perPage = 20,
 ): Promise<AuthorsResponse> => {
   const res = await api.get<AuthorsResponse>("/authors", {
+    params: { page, perPage },
+  });
+  return res.data;
+};
+
+export const fetchAuthorClient = async (id: string): Promise<Author> => {
+  const res = await api.get<UserResponse>(`/users/${id}`);
+  return res.data.user;
+};
+
+export const fetchAuthorArticlesClient = async (
+  authorId: string,
+  page = 1,
+  perPage = 12
+): Promise<ArticlesResponse> => {
+  const res = await api.get<ArticlesResponse>(`/users/${authorId}/articles`, {
     params: { page, perPage },
   });
   return res.data;

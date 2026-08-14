@@ -1,0 +1,21 @@
+.saveButton {
+  height: 46px;
+}
+
+.saveButton > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.bookmarkIcon {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+}
+
+.bookmarkIconSaved {
+  fill: currentColor;
+}

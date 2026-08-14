@@ -26,9 +26,9 @@ export default function ArticlesList({ articles }: ArticlesListProps) {
 
   return (
     <ul>
-      {articles.map((article) => (
+      {articles.map((article, index) => (
         <ArticlesItem
-          key={article._id}
+          key={`${article._id}-${index}`}
           id={article._id}
           title={article.title}
           description={article.description}

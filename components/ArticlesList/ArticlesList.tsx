@@ -1,4 +1,5 @@
 import ArticlesItem from "@/components/ArticlesItem/ArticlesItem";
+import css from "./ArticlesList.module.css";
 
 type Article = {
   _id: string;
@@ -25,7 +26,7 @@ export default function ArticlesList({ articles }: ArticlesListProps) {
   }
 
   return (
-    <ul>
+    <ul className={css.articlesList}>
       {articles.map((article, index) => (
         <ArticlesItem
           key={`${article._id}-${index}`}

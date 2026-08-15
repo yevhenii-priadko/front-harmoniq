@@ -3,6 +3,7 @@
 import ArticlesList from "@/components/ArticlesList/ArticlesList";
 import SectionTitle from "@/components/SectionTitle/SectionTitle";
 import { useEffect, useState } from "react";
+import css from "./page.module.css";
 
 type Article = {
   _id: string;
@@ -118,10 +119,10 @@ export default function ArticlesPage() {
   const hasMoreArticles = page < totalPages;
 
   return (
-    <main>
+    <div className={css.page}>
       <SectionTitle>Articles</SectionTitle>
 
-      <div>
+      <div className={css.filters}>
         <p>{totalArticles} articles</p>
 
         <select value={filter} onChange={handleFilterChange}>
@@ -145,6 +146,6 @@ export default function ArticlesPage() {
           )}
         </>
       )}
-    </main>
+    </div>
   );
 }

@@ -1,0 +1,126 @@
+.form {
+  position: relative;
+  display: flex;
+  width: 360px;
+  max-width: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 32px 32px;
+  border-radius: 32px;
+  background-color: var(--light-green);
+}
+
+.closeButton {
+  position: absolute;
+  top: 15px;
+  right: 13px;
+  display: flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  color: var(--black);
+}
+
+.closeButton:hover,
+.closeButton:focus-visible {
+  color: var(--green-darker);
+}
+
+.closeButton:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+
+.closeIcon {
+  width: 32px;
+  height: 32px;
+  fill: none;
+  stroke: currentColor;
+}
+
+.title {
+  margin-bottom: 16px;
+  color: var(--black);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.photoPicker {
+  position: relative;
+  display: flex;
+  width: 136px;
+  height: 136px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-bottom: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--green);
+  cursor: pointer;
+}
+
+.fileInput:focus-visible + .photoPicker {
+  outline: 2px solid var(--purple);
+  outline-offset: 3px;
+}
+
+.cameraIcon {
+  width: 72px;
+  height: 64px;
+  fill: none;
+  stroke: var(--black);
+}
+
+.preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.saveButton:disabled {
+  opacity: 1;
+  background-color: rgb(100 145 121 / 45%);
+  color: rgb(247 255 251 / 65%);
+  box-shadow: 0 0 0 3px rgb(247 255 251 / 45%);
+}
+
+@media (min-width: 768px) {
+  .form {
+    width: 360px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .form {
+    width: 392px;
+  }
+}

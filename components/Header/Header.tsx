@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import UserBar from '../UserBar/UserBar';
-import { useAuthStore } from '@/lib/store/authStore';
-import css from './Header.module.css';
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import UserBar from "../UserBar/UserBar";
+import { useAuthStore } from "@/lib/store/authStore";
+import css from "./Header.module.css";
 
 type NavItem = {
   href: string;
@@ -13,16 +13,16 @@ type NavItem = {
 };
 
 const GUEST_NAV: NavItem[] = [
-  { href: '/', label: 'Home' },
-  { href: '/articles', label: 'Articles' },
-  { href: '/authors', label: 'Creators' },
+  { href: "/", label: "Home" },
+  { href: "/articles", label: "Articles" },
+  { href: "/authors", label: "Creators" },
 ];
 
 const AUTH_NAV: NavItem[] = [
-  { href: '/', label: 'Home' },
-  { href: '/articles', label: 'Articles' },
-  { href: '/authors', label: 'Creators' },
-  { href: '/profile', label: 'My Profile' },
+  { href: "/", label: "Home" },
+  { href: "/articles", label: "Articles" },
+  { href: "/authors", label: "Creators" },
+  { href: "/profile", label: "My Profile" },
 ];
 
 function Header() {
@@ -42,11 +42,11 @@ function Header() {
   }
 
   // На сторінках логіну та реєстрації Header містить лише логотип
-  const isAuthPage = pathname === '/login' || pathname === '/register';
+  const isAuthPage = pathname === "/login" || pathname === "/register";
 
   const navItems = isAuthenticated ? AUTH_NAV : GUEST_NAV;
-  const actionHref = isAuthenticated ? '/articles/new' : '/register';
-  const actionLabel = isAuthenticated ? 'Create an article' : 'Join now';
+  const actionHref = isAuthenticated ? "/articles/new" : "/register";
+  const actionLabel = isAuthenticated ? "Create an article" : "Join now";
 
   const toggleMenu = () => setIsMenuOpen((current) => !current);
 
@@ -67,16 +67,13 @@ function Header() {
                     <Link
                       href={href}
                       className={css.navLink}
-                      aria-current={pathname === href ? 'page' : undefined}
+                      aria-current={pathname === href ? "page" : undefined}
                     >
                       {label}
                     </Link>
                   </li>
                 ))}
 
-                {/* ТЗ описує "Log in" як посилання, стилізоване під кнопку,
-                    але на самому макеті Figma це звичайне текстове посилання
-                    (без pill-фону) — варто звірити з ментором, який варіант вірний. */}
                 {!isAuthenticated && (
                   <li>
                     <Link href="/login" className={css.navLink}>
@@ -94,19 +91,23 @@ function Header() {
 
             {/* UserBar — лише Desktop, лише авторизований, закрите меню */}
             {isAuthenticated && user && (
-              <UserBar user={{ username: user.username, avatar: user.avatar ?? undefined }} />
+              <UserBar
+                user={{ username: user.username, avatar: user.avatar ?? undefined }}
+              />
             )}
 
             {/* Бургер-кнопка — схована на Desktop */}
             <button
               type="button"
               className={css.burgerButton}
-              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMenuOpen}
               onClick={toggleMenu}
             >
               <svg className={css.burgerIcon} aria-hidden="true">
-                <use href={`/sprite.svg#${isMenuOpen ? 'icon-close-small' : 'icon-burger'}`} />
+                <use
+                  href={`/sprite.svg#${isMenuOpen ? "icon-close-small" : "icon-burger"}`}
+                />
               </svg>
             </button>
           </div>

@@ -1,4 +1,5 @@
-import { api } from './api';
+import { api } from "./api";
+import { isAxiosError } from "axios";
 
 export type Author = {
   _id: string;
@@ -17,11 +18,31 @@ export type AuthorsResponse = {
   users: Author[];
 };
 
+export type UserResponse = {
+  user: Author;
+};
+
 export const fetchAuthorsClient = async (
   page = 1,
   perPage = 20,
 ): Promise<AuthorsResponse> => {
-  const res = await api.get<AuthorsResponse>('/authors', {
+  const res = await api.get<AuthorsResponse>("/authors", {
+    params: { page, perPage },
+  });
+  return res.data;
+};
+
+export const fetchAuthorClient = async (id: string): Promise<Author> => {
+  const res = await api.get<UserResponse>(`/users/${id}`);
+  return res.data.user;
+};
+
+export const fetchAuthorArticlesClient = async (
+  authorId: string,
+  page = 1,
+  perPage = 12
+): Promise<ArticlesResponse> => {
+  const res = await api.get<ArticlesResponse>(`/users/${authorId}/articles`, {
     params: { page, perPage },
   });
   return res.data;
@@ -81,16 +102,31 @@ export const fetchArticlesClient = async (
   page = 1,
   perPage = 12,
 ): Promise<ArticlesResponse> => {
-  const res = await api.get<ArticlesResponse>('/articles', {
+  const res = await api.get<ArticlesResponse>("/articles", {
     params: { page, perPage },
   });
   return res.data;
 };
 
 // Створення статті — AddArticleForm, кнопка Publish.
-// Працює вже зараз, бо бекенд приймає звичайний JSON з photo-рядком.
-export const createArticle = async (values: ArticleFormValues): Promise<Article> => {
-  const res = await api.post<Article>('/articles', values);
+
+export type CreateArticlePayload = {
+  title: string;
+  description: string;
+  date: string;
+  author: string;
+  photo: File;
+};
+
+export const createArticle = async (values: CreateArticlePayload): Promise<Article> => {
+  const formData = new FormData();
+  formData.append("title", values.title);
+  formData.append("description", values.description);
+  formData.append("date", values.date);
+  formData.append("author", values.author);
+  formData.append("photo", values.photo);
+
+  const res = await api.post<Article>("/articles", formData);
   return res.data;
 };
 
@@ -104,4 +140,80 @@ export const updateArticle = async (
 ): Promise<Article> => {
   const res = await api.patch<Article>(`/articles/${id}`, values);
   return res.data;
+};
+
+//Завантаження аватара користувача — UploadForm, кнопка Save.
+export const uploadAvatar = async (file: File): Promise<string> => {
+  const formData = new FormData();
+
+  formData.append("avatar", file);
+
+  try {
+    const { data } = await api.patch<{ url: string }>("/users/avatar", formData);
+
+    return data.url;
+  } catch (error) {
+    if (isAxiosError<{ message?: string }>(error)) {
+      throw new Error(error.response?.data?.message ?? "Unable to upload your photo.");
+    }
+
+    throw new Error("Unable to upload your photo.");
+  }
+};
+
+//Отримання створених статей поточного користувача для ProfilePage
+export const fetchUserArticles = async (
+  userId: string,
+  page = 1,
+  perPage = 12,
+): Promise<ArticlesResponse> => {
+  const res = await api.get<ArticlesResponse>(`/users/${userId}/articles`, {
+    params: { page, perPage },
+  });
+
+  return res.data;
+};
+
+// Отримання збережених статей поточного користувача для ProfilePage
+export const fetchSavedArticles = async (
+  page = 1,
+  perPage = 12,
+): Promise<ArticlesResponse> => {
+  const res = await api.get<ArticlesResponse>("/users/me/saved-articles", {
+    params: { page, perPage },
+  });
+
+  return res.data;
+};
+
+// Перевіряємо, чи знаходиться конкретна статья в збережених.
+export const checkIsArticleSaved = async (articleId: string): Promise<boolean> => {
+  // Спочатку перевіряємо першу сторінку збережених статей, якщо там немає — ідемо по всіх сторінках.
+  let page = 1;
+  let totalPages = 1;
+
+  do {
+    const data = await fetchSavedArticles(page, 20);
+
+    const isSaved = data.articles.some((article) => article._id === articleId);
+
+    if (isSaved) {
+      return true;
+    }
+
+    totalPages = data.totalPages;
+    page += 1;
+  } while (page <= totalPages);
+
+  return false;
+};
+
+// Додавання статті до збережених.
+export const addArticleToSaved = async (articleId: string): Promise<void> => {
+  await api.post(`/users/saved/${articleId}`);
+};
+
+// Видалення статті зі збережених.
+export const removeArticleFromSaved = async (articleId: string): Promise<void> => {
+  await api.delete(`/users/saved/${articleId}`);
 };

@@ -9,6 +9,7 @@ import FormField from "@/components/FormField/FormField";
 import PasswordField from "@/components/PasswordField/PasswordField";
 import PasswordStrengthBar from "@/components/PasswordStrengthBar/PasswordStrengthBar";
 import ErrorNotification from "@/components/ErrorNotification/ErrorNotification";
+import { useAuthStore } from "@/lib/store/authStore";
 import styles from "./RegisterForm.module.css";
 
 const registerSchema = Yup.object({
@@ -94,10 +95,18 @@ export default function RegisterForm() {
           }),
         });
 
+        const loginData = await loginResponse.json().catch(() => null);
+
         if (!loginResponse.ok) {
           throw new Error(
             "Your account was created, but automatic sign-in failed. Please log in.",
           );
+        }
+
+        // ⚠️ Без цього Header не дізнається про авторизацію до наступного
+        // reload/AuthSessionChecker — той самий баг, що чинили в LoginForm.
+        if (loginData?.user) {
+          useAuthStore.getState().setUser(loginData.user);
         }
 
         // Переходимо далі тільки після отримання сесії.

@@ -16,7 +16,7 @@ export default function Hero() {
             </Link>
           </li>
           <li>
-            <Link className={css.regBtn} href="/auth/register">
+            <Link className={css.regBtn} href="/register">
               Register
             </Link>
           </li>

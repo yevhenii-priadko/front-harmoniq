@@ -1,0 +1,216 @@
+.label,
+.inputTitle,
+.submit {
+  display: block;
+}
+
+.container {
+  padding: 48px 16px;
+  display: grid;
+  justify-items: center;
+}
+
+.title {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 40px;
+  color: var(--black);
+  margin-bottom: 16px;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.error {
+  color: var(--red);
+  font-size: 14px;
+  margin-top: -16px;
+  margin-bottom: 16px;
+}
+
+.uploadLabel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 361px;
+  height: 233px;
+  background-color: var(--light-gray);
+  border-radius: 20px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+  overflow: hidden;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.previewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cameraIcon {
+  width: 80px;
+  height: 80px;
+}
+
+.label {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--black);
+  margin-bottom: 8px;
+}
+
+.inputTitle {
+  margin-bottom: 24px;
+  border: 1px solid var(--light-gray);
+  border-radius: 8px;
+  padding: 11.5px 12px;
+  width: 361px;
+  height: 48px;
+  max-height: 48px;
+  color: var(--black);
+}
+
+.description {
+  margin-bottom: 24px;
+  border: 1px solid var(--light-gray);
+  border-radius: 8px;
+  padding: 12px;
+  width: 361px;
+  min-height: 393px;
+  color: var(--black);
+}
+
+.inputTitle::placeholder,
+.description::placeholder {
+  color: var(--gray);
+}
+
+.submit {
+  border-radius: 64px;
+  padding: 12px 16px;
+  width: 361px;
+  height: 46px;
+  background: var(--green);
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--white);
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.disabled {
+  box-shadow:
+    0 0 0 6px rgba(78, 70, 180, 0.12),
+    0 0 0 2px #fff;
+  background: var(--green);
+  opacity: 0.3;
+  cursor: default;
+}
+
+.submit:disabled,
+.submit.disabled {
+  pointer-events: none;
+}
+
+.submit:disabled:hover,
+.submit.disabled:hover {
+  background: var(--green);
+  opacity: 0.3;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 48px 32px;
+    justify-items: stretch;
+    max-width: 768px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .wrapper {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+  .titleWrapper {
+    flex: 1;
+    min-width: 0;
+  }
+  .inputTitle {
+    width: 100%;
+  }
+  .title {
+    text-align: left;
+  }
+  .uploadLabel {
+    min-width: 340px;
+    height: 219px;
+    max-height: 219px;
+  }
+  .description {
+    width: 100%;
+  }
+  .submit {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1440px;
+    padding: 48px 108px;
+  }
+  .wrapper {
+    position: relative;
+    margin-bottom: 32px;
+  }
+  .titleWrapper {
+    flex: none;
+    width: 809px;
+  }
+  .inputTitle {
+    margin-bottom: 0;
+  }
+  .description {
+    width: 809px;
+    max-width: 809px;
+    margin-bottom: 32px;
+  }
+  .submit {
+    width: 809px;
+    max-width: 809px;
+  }
+  .uploadLabel {
+    position: absolute;
+    top: 32px;
+    right: 0;
+    width: 391px;
+    height: 280px;
+    min-width: 0;
+    max-height: none;
+    margin: 0;
+  }
+  .uploadLabel:hover {
+    background-color: #9f9f9f;
+    opacity: 0.9;
+  }
+  .submit:hover {
+    background-color: var(--green-darker);
+  }
+  .submit:active {
+    box-shadow:
+      0 0 0 6px rgba(78, 70, 180, 0.12),
+      0 0 0 2px #fff;
+    background: var(--green);
+  }
+}

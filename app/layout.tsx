@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
 import AuthSessionChecker from "@/components/AuthSessionChecker/AuthSessionChecker";
+import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -30,10 +31,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       data-scroll-behavior="smooth"
     >
       <body>
-        <AuthSessionChecker />
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <TanStackProvider>
+          <AuthSessionChecker />
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </TanStackProvider>
       </body>
     </html>
   );

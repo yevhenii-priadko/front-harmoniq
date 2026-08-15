@@ -4,9 +4,6 @@ import { isAxiosError } from "axios";
 import { api } from "../api";
 import { logErrorResponse } from "../_utils/utils";
 
-// GET прокидує ВСІ query-параметри як є (page/perPage/filter/sortOrder тощо) —
-// так фронту не треба перелічувати кожен параметр окремо, і фільтр
-// "Popular"/"All" з ArticlesPage (див. backend PR #13) працює без додаткових правок тут.
 export async function GET(request: NextRequest) {
   try {
     const cookieStore = await cookies();
@@ -32,17 +29,14 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Приймає звичайний JSON (title/description/date/author/photo-URL) —
-// бекенд поки не вміє приймати файл, див. коментар у lib/api/clientApi.ts
 export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies();
-    const body = await request.json();
+    const formData = await request.formData();
 
-    const res = await api.post("/articles", body, {
+    const res = await api.post("/articles", formData, {
       headers: {
         Cookie: cookieStore.toString(),
-        "Content-Type": "application/json",
       },
     });
 

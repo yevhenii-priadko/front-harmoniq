@@ -1,50 +1,88 @@
+.loadingWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
 .page {
-    margin: 0 auto;
-    padding: 48px 16px;
-    box-sizing: border-box;
+  margin: 0 auto;
+  padding: 48px 16px;
+  box-sizing: border-box;
 }
 
-.filters{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
 }
 
-.filters p{
-    font-family: var(--font-family);
-    font-weight: 700;
-    font-size: 18px;
-    color: #070721;
+.filters p {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--black);
 }
 
-
-.filters select{
-    border: 1px solid #9F9F9F;
-    border-radius: 4px;
-    padding: 4px 8px;
-    width: 169px;
-    height: 33px;
-    background-color: #F7FFFB;
-    color: #595D62;
+.filters select {
+  border: 1px solid var(--light-gray);
+  border-radius: 4px;
+  padding: 4px 8px;
+  width: 169px;
+  height: 33px;
+  background-color: var(--white);
+  color: var(--gray);
+  cursor: pointer;
+  transition: border-color 0.2s ease;
 }
-.filters select option{
-    background-color: #F7FFFB;
-    color: #070721;
+
+.filters select:hover,
+.filters select:focus {
+  border-color: var(--green);
+}
+
+.filters select option {
+  background-color: var(--white);
+  color: var(--black);
 }
 
 .filters select option:checked {
-    background-color: #D1E0D8;
+  background-color: var(--light-green);
 }
 
-@media screen and (min-width: 768px){
-    .page{
-        padding: 48px 32px;
-    }
+.loadMoreButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 24px auto 0;
+  padding: 8px 24px;
+  border: 1px solid var(--green-darker);
+  border-radius: 64px;
+  background-color: transparent;
+  color: var(--green-darker);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.loadMoreButton:hover:not(:disabled),
+.loadMoreButton:focus:not(:disabled) {
+  background-color: var(--white);
+}
+
+.loadMoreButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media screen and (min-width: 768px) {
+  .page {
+    padding: 48px 32px;
+  }
 }
 
 @media screen and (min-width: 1440px) {
-    .page {
-        padding: 48px 108px;
-    }
+  .page {
+    padding: 48px 108px;
+  }
 }

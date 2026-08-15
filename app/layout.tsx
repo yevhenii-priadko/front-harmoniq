@@ -5,7 +5,6 @@ import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
 import AuthSessionChecker from "@/components/AuthSessionChecker/AuthSessionChecker";
 
-
 const manrope = Manrope({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
@@ -25,14 +24,16 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="uk" className={`${manrope.variable} ${merienda.variable}`} data-scroll-behavior="smooth">
+    <html
+      lang="uk"
+      className={`${manrope.variable} ${merienda.variable}`}
+      data-scroll-behavior="smooth"
+    >
       <body>
         <AuthSessionChecker />
-        <Header/>
-        <main>
-          {children}
-        </main>
-        <Footer/>
+        <Header />
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );

@@ -1,0 +1,50 @@
+.page {
+    margin: 0 auto;
+    padding: 48px 16px;
+    box-sizing: border-box;
+}
+
+.filters{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.filters p{
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 18px;
+    color: #070721;
+}
+
+
+.filters select{
+    border: 1px solid #9F9F9F;
+    border-radius: 4px;
+    padding: 4px 8px;
+    width: 169px;
+    height: 33px;
+    background-color: #F7FFFB;
+    color: #595D62;
+}
+.filters select option{
+    background-color: #F7FFFB;
+    color: #070721;
+}
+
+.filters select option:checked {
+    background-color: #D1E0D8;
+}
+
+@media screen and (min-width: 768px){
+    .page{
+        padding: 48px 32px;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    .page {
+        padding: 48px 108px;
+    }
+}

@@ -15,6 +15,7 @@ import css from "./ButtonAddToBookmarks.module.css";
 
 type ButtonAddToBookmarksProps = {
   articleId: string;
+  variant?: "icon" | "full";
 };
 
 function getErrorMessage(error: unknown) {
@@ -29,7 +30,10 @@ function getErrorMessage(error: unknown) {
   return "Unable to update saved articles.";
 }
 
-export default function ButtonAddToBookmarks({ articleId }: ButtonAddToBookmarksProps) {
+export default function ButtonAddToBookmarks({
+  articleId,
+  variant = "full",
+}: ButtonAddToBookmarksProps) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const [isSaved, setIsSaved] = useState(false);
@@ -97,19 +101,23 @@ export default function ButtonAddToBookmarks({ articleId }: ButtonAddToBookmarks
     }
   };
 
+  const isIcon = variant === "icon";
+
   return (
     <>
       <Button
-        className={css.saveButton}
+        className={isIcon ? css.saveButtonIcon : css.saveButtonFull}
         type="button"
-        fullWidth
+        fullWidth={!isIcon}
+        size={isIcon ? "sm" : "md"}
         disabled={isChecking}
         isLoading={isLoading}
-        loadingText={isSaved ? "Removing..." : "Saving..."}
+        loadingText={isIcon ? "" : isSaved ? "Removing..." : "Saving..."}
         aria-pressed={isSaved}
+        aria-label={isIcon ? (isSaved ? "Remove from saved" : "Save article") : undefined}
         onClick={handleClick}
       >
-        {isSaved ? "Saved" : "Save"}
+        {!isIcon && (isSaved ? "Saved" : "Save")}
 
         <svg
           className={`${css.bookmarkIcon} ${isSaved ? css.bookmarkIconSaved : ""}`}

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 
-import css from "@/app/articles/new/NewArticlePage.module.css";
+import css from "./ArticleForm.module.css";
 
 const MAX_FILE_SIZE = 1024 * 1024;
 

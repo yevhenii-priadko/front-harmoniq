@@ -35,6 +35,7 @@ export default function ArticlesList({ articles }: ArticlesListProps) {
           description={article.description}
           photo={article.photo}
           userName={article.author ?? "Harmoniq author"}
+          userId={article.userId}
         />
       ))}
     </ul>

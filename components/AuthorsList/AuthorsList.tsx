@@ -39,9 +39,9 @@ export default function AuthorsList({ initialData, initialError = '' }: AuthorsL
       setPage(data.page);
       setTotalPages(data.totalPages);
 
-      if (nextPage > 1) {
-        listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      // if (nextPage > 1) {
+      //   listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // }
     } catch {
       setError('Unable to load authors. Please try again later.');
     } finally {

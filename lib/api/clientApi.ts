@@ -76,18 +76,18 @@ export type Article = {
 
 // Пейлоад для PATCH /articles/:id (updateArticle нижче). Назва навмисно
 // відрізняється від ArticleFormValues у components/ArticleForm/ArticleForm.tsx —
-// та описує стан самої форми (photo: File | string | null, date/author
-// опціональні), а це — вже готовий до відправки об'єкт (photo завжди URL-рядок,
-// бо на момент виклику updateArticle фото або вже завантажене на Cloudinary,
-// або лишилось старим значенням).
+// та описує стан самої форми (date/author опціональні), а це — вже готовий
+// до відправки об'єкт. photo може бути новим File (юзер вибрав нову картинку
+// в формі редагування — тоді updateArticle нижче збирає FormData і вантажить
+// файл, як і createArticle) або рядком (лишили старе фото — просто передаємо
+// існуючий URL).
 export type UpdateArticlePayload = {
   title: string;
   description: string;
   date: string;
   author: string;
-  photo: string; // URL, не File
+  photo: File | string;
 };
-
 // Список статей — для клієнтських хуків (React Query) на ArticlesPage
 export const fetchArticlesClient = async (
   page = 1,
@@ -124,10 +124,27 @@ export const createArticle = async (values: CreateArticlePayload): Promise<Artic
 // PATCH /articles/:id реалізовано на бекенді (PR #21 + фікс #22, #23).
 // Поле author у values бекенд ігнорує — він завжди підставляє ім'я
 // з автентифікованої сесії, а не з тіла запиту.
+//
+// Якщо photo — новий File (юзер вибрав іншу картинку при редагуванні),
+// шлемо multipart/form-data так само, як createArticle: бекенд сам вантажить
+// файл на Cloudinary і підставляє URL. Якщо photo лишився рядком (старе фото
+// не міняли) — шлемо звичайний JSON, як і раніше.
 export const updateArticle = async (
   id: string,
   values: UpdateArticlePayload,
 ): Promise<Article> => {
+  if (values.photo instanceof File) {
+    const formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("description", values.description);
+    formData.append("date", values.date);
+    formData.append("author", values.author);
+    formData.append("photo", values.photo);
+
+    const res = await api.patch<Article>(`/articles/${id}`, formData);
+    return res.data;
+  }
+
   const res = await api.patch<Article>(`/articles/${id}`, values);
   return res.data;
 };

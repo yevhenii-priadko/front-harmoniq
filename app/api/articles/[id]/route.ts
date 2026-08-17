@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { isAxiosError } from 'axios';
-import { api } from '../../api';
-import { logErrorResponse } from '../../_utils/utils';
+import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { isAxiosError } from "axios";
+import { api } from "../../api";
+import { logErrorResponse } from "../../_utils/utils";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -27,24 +27,28 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       );
     }
     logErrorResponse({ message: (error as Error).message });
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
-// ⚠️ Бекенд поки НЕ має роута PATCH /articles/:id (перевірено в коді
-// і на живому сервері) — цей проксі готовий на майбутнє, але зараз
-// гарантовано поверне 404 від бекенду. Не видаляємо, просто чекаємо,
-// поки з'явиться реалізація на бекенді.
+// PATCH /articles/:id реалізовано на бекенді (PR #21 + фікс #22, #23).
+// Якщо юзер міняє фото при редагуванні статті, клієнт шле сюди
+// multipart/form-data (як і на створенні статті) — тоді форвардимо
+// FormData як є, без ручного Content-Type (щоб axios сам виставив
+// правильний boundary). Якщо фото не міняли — клієнт шле звичайний JSON.
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
     const cookieStore = await cookies();
-    const body = await request.json();
+    const contentType = request.headers.get("content-type") ?? "";
+    const isMultipart = contentType.includes("multipart/form-data");
+
+    const body = isMultipart ? await request.formData() : await request.json();
 
     const res = await api.patch(`/articles/${id}`, body, {
       headers: {
         Cookie: cookieStore.toString(),
-        'Content-Type': 'application/json',
+        ...(isMultipart ? {} : { "Content-Type": "application/json" }),
       },
     });
 
@@ -58,6 +62,6 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       );
     }
     logErrorResponse({ message: (error as Error).message });
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

@@ -12,6 +12,7 @@ interface ArticlesItemProps {
   description: string;
   photo: string;
   userName: string;
+  action?: "bookmark" | "edit";
   userId: string; // Додано userId для перевірки авторства
 }
 
@@ -21,6 +22,7 @@ export default function ArticlesItem({
   description,
   photo,
   userName,
+  action = "bookmark",
   userId,
 }: ArticlesItemProps) {
 
@@ -41,8 +43,15 @@ export default function ArticlesItem({
         <Link href={`/articles/${id}`} className={css.articleItem__button}>
           Learn more
         </Link>
-        <ButtonAddToBookmarks articleId={id} variant="icon" />
-        {isAuthor && <ButtonEditArticle className={css.edit} articleId={id} showText={false} />}
+        {action === "edit" && isAuthor ? (
+          <ButtonEditArticle
+            className={css.edit}
+            articleId={id}
+            showText={false}
+          />
+        ) : (
+          <ButtonAddToBookmarks articleId={id} variant="icon" />
+        )}
       </div>
     </li>
   );

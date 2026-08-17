@@ -39,5 +39,7 @@ export default function NewArticlePage() {
     resetForm();
   };
 
-  return <ArticleForm onSubmit={handleSubmit} />;
+  return (
+    <ArticleForm onSubmit={handleSubmit} isLoading={mutation.status === "pending"} />
+  );
 }

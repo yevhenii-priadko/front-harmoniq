@@ -51,6 +51,7 @@ export default function ClientEdit({ articleId, initialValues }: ClientEditProps
       initialValues={initialValues}
       submitLabel="Save Changes"
       onSubmit={handleSubmit}
+      isLoading={mutation.status === "pending"}
     />
   );
 }

@@ -38,12 +38,14 @@ interface ArticleFormProps {
     values: ArticleFormValues,
     helpers: FormikHelpers<ArticleFormValues>,
   ) => Promise<void> | void;
+  isLoading?: boolean;
 }
 
 export default function ArticleForm({
   initialValues = { title: "", description: "", photo: null },
   submitLabel = "Publish Article",
   onSubmit,
+  isLoading = false,
 }: ArticleFormProps) {
   const fieldId = useId();
 
@@ -75,7 +77,7 @@ export default function ArticleForm({
         validateOnMount
       >
         {({ isValid, dirty, setFieldValue }) => {
-          const isDisabled = !isValid || !dirty;
+          const isDisabled = !isValid || !dirty || !!isLoading;
 
           const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
             const file = event.target.files?.[0];
@@ -158,7 +160,7 @@ export default function ArticleForm({
                 type="submit"
                 disabled={isDisabled}
               >
-                {submitLabel}
+                {isLoading ? "Loading..." : submitLabel}
               </button>
             </Form>
           );

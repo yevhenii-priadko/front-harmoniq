@@ -39,7 +39,7 @@ export default function ArticlesItem({
       </div>
       <div className={css.articleItem__buttons}>
         <Link href={`/articles/${id}`} className={css.articleItem__button}>
-          Learn More
+          Learn more
         </Link>
         <ButtonAddToBookmarks articleId={id} variant="icon" />
         {isAuthor && <ButtonEditArticle className={css.edit} articleId={id} showText={false} />}

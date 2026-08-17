@@ -1,6 +1,7 @@
 "use client";
 
 import ArticlesList from "@/components/ArticlesList/ArticlesList";
+import EmptyState from "@/components/EmptyState/EmptyState";
 import SectionTitle from "@/components/SectionTitle/SectionTitle";
 import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
@@ -123,7 +124,11 @@ export default function ArticlesPage() {
     <div className={css.page}>
       <SectionTitle>Articles</SectionTitle>
 
-      <div className={css.filters}>
+      <div
+        className={`${css.filters} ${
+          !isLoading && !error && articles.length === 0 ? css.emptyFilters : ""
+        }`}
+      >
         <p>{totalArticles} articles</p>
 
         <select value={filter} onChange={handleFilterChange}>
@@ -149,7 +154,15 @@ export default function ArticlesPage() {
         </div>
       ) : (
         <>
-          <ArticlesList articles={articles} />
+          {!error && articles.length === 0 ? (
+            <EmptyState
+              description="Be the first, who create an article"
+              buttonText="Create an article"
+              href="/articles/new"
+            />
+          ) : articles.length > 0 ? (
+            <ArticlesList articles={articles} />
+          ) : null}
 
           {hasMoreArticles && (
             <button

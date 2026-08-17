@@ -17,6 +17,10 @@
   margin-bottom: 16px;
 }
 
+.emptyFilters select {
+  display: none;
+}
+
 .filters p {
   font-family: var(--font-family);
   font-weight: 700;
@@ -90,5 +94,9 @@
   }
   .loadMoreButton {
     width: 392px;
+  }
+
+  .emptyFilters select {
+    display: block;
   }
 }

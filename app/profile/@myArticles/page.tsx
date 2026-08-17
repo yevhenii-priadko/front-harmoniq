@@ -1,17 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Oval } from 'react-loader-spinner';
-import ArticlesList from '@/components/ArticlesList/ArticlesList';
-import {
-  fetchUserArticles,
-  type Article,
-} from '@/lib/api/clientApi';
-import { useAuthStore } from '@/lib/store/authStore';
-import ErrorNotification from '@/components/ErrorNotification/ErrorNotification';
-import { useProfileStore } from '@/lib/store/profileStore';
-import EmptyState from '@/components/EmptyState/EmptyState';
-import css from '../ProfileLayout.module.css';
+import { useEffect, useState } from "react";
+import { Oval } from "react-loader-spinner";
+import ArticlesList from "@/components/ArticlesList/ArticlesList";
+import { fetchUserArticles, type Article } from "@/lib/api/clientApi";
+import { useAuthStore } from "@/lib/store/authStore";
+import ErrorNotification from "@/components/ErrorNotification/ErrorNotification";
+import { useProfileStore } from "@/lib/store/profileStore";
+import EmptyState from "@/components/EmptyState/EmptyState";
+import css from "../ProfileLayout.module.css";
 
 const PER_PAGE = 12;
 
@@ -23,10 +20,8 @@ export default function MyArticlesPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [error, setError] = useState('');
-  const setTotalArticles = useProfileStore(
-    (state) => state.setTotalArticles,
-  );
+  const [error, setError] = useState("");
+  const setTotalArticles = useProfileStore((state) => state.setTotalArticles);
 
   useEffect(() => {
     if (!user?._id) {
@@ -36,7 +31,7 @@ export default function MyArticlesPage() {
     const loadArticles = async () => {
       try {
         setIsLoading(true);
-        setError('');
+        setError("");
 
         const data = await fetchUserArticles(user._id, 1, PER_PAGE);
         setTotalArticles(data.totalArticles);
@@ -45,7 +40,7 @@ export default function MyArticlesPage() {
         setPage(Number(data.page));
         setTotalPages(data.totalPages);
       } catch {
-        setError('Failed to load your articles.');
+        setError("Failed to load your articles.");
       } finally {
         setIsLoading(false);
       }
@@ -63,23 +58,15 @@ export default function MyArticlesPage() {
 
     try {
       setIsLoadingMore(true);
-      setError('');
+      setError("");
 
-      const data = await fetchUserArticles(
-        user._id,
-        nextPage,
-        PER_PAGE,
-      );
+      const data = await fetchUserArticles(user._id, nextPage, PER_PAGE);
 
-      setArticles((prevArticles) => [
-        ...prevArticles,
-        ...data.articles,
-      ]);
+      setArticles((prevArticles) => [...prevArticles, ...data.articles]);
       setPage(Number(data.page));
       setTotalPages(data.totalPages);
-
     } catch {
-      setError('Failed to load more articles.');
+      setError("Failed to load more articles.");
     } finally {
       setIsLoadingMore(false);
     }
@@ -106,10 +93,7 @@ export default function MyArticlesPage() {
 
   return (
     <section>
-      <ErrorNotification
-        message={error}
-        onClose={() => setError('')}
-      />
+      <ErrorNotification message={error} onClose={() => setError("")} />
 
       {!error && articles.length === 0 ? (
         <div className={css.myArticlesEmpty}>
@@ -121,7 +105,7 @@ export default function MyArticlesPage() {
         </div>
       ) : articles.length > 0 ? (
         <div className={css.profileArticlesList}>
-          <ArticlesList articles={articles} />
+          <ArticlesList articles={articles} action="edit" />
         </div>
       ) : null}
 
@@ -132,7 +116,7 @@ export default function MyArticlesPage() {
           onClick={handleLoadMore}
           disabled={isLoadingMore}
         >
-          {isLoadingMore ? 'Loading...' : 'Load More'}
+          {isLoadingMore ? "Loading..." : "Load More"}
         </button>
       )}
     </section>

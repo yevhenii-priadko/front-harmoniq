@@ -1,4 +1,5 @@
 import ArticlesItem from "@/components/ArticlesItem/ArticlesItem";
+import css from "./ArticlesList.module.css";
 
 type Article = {
   _id: string;
@@ -25,15 +26,16 @@ export default function ArticlesList({ articles }: ArticlesListProps) {
   }
 
   return (
-    <ul>
-      {articles.map((article) => (
+    <ul className={css.articlesList}>
+      {articles.map((article, index) => (
         <ArticlesItem
-          key={article._id}
+          key={`${article._id}-${index}`}
           id={article._id}
           title={article.title}
           description={article.description}
           photo={article.photo}
           userName={article.author ?? "Harmoniq author"}
+          userId={article.userId}
         />
       ))}
     </ul>

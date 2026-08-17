@@ -1,71 +1,135 @@
-// "use client";
+"use client";
 
-// import { useState } from "react";
-// import toast from "react-hot-toast";
-// import css from "./ButtonAddToBookmarks.module.css";
-// import ErrorSaveModal from "../ErrorSaveModal/ErrorSaveModal";
+import { useEffect, useState } from "react";
+import { isAxiosError } from "axios";
+import Button from "@/components/Button/Button";
+import ErrorNotification from "@/components/ErrorNotification/ErrorNotification";
+import ErrorSaveModal from "@/components/ErrorSaveModal/ErrorSaveModal";
+import {
+  addArticleToSaved,
+  checkIsArticleSaved,
+  removeArticleFromSaved,
+} from "@/lib/api/clientApi";
+import { useAuthStore } from "@/lib/store/authStore";
+import css from "./ButtonAddToBookmarks.module.css";
 
-// interface ButtonAddToBookmarksProps {
-//   articleId: string;
-//   initialIsSaved?: boolean;
-//   isLoggedIn: boolean;
-// }
+type ButtonAddToBookmarksProps = {
+  articleId: string;
+  variant?: "icon" | "full";
+};
 
-// export default function ButtonAddToBookmarks({
-//   articleId,
-//   initialIsSaved = false,
-//   isLoggedIn,
-// }: ButtonAddToBookmarksProps) {
-//   const [isSaved, setIsSaved] = useState<boolean>(initialIsSaved);
-//   const [isLoading, setIsLoading] = useState<boolean>(false);
-//   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+function getErrorMessage(error: unknown) {
+  if (isAxiosError<{ message?: string }>(error)) {
+    return error.response?.data?.message ?? "Unable to update saved articles.";
+  }
 
-//   const handleClick = async () => {
-//     if (!isLoggedIn) {
-//       setIsModalOpen(true);
-//       return;
-//     }
+  if (error instanceof Error) {
+    return error.message;
+  }
 
-//     setIsLoading(true);
+  return "Unable to update saved articles.";
+}
 
-//     try {
-//       if (isSaved) {
-//         toast.success("Видалено зі збережених");
-//       } else {
-//         toast.success("Додано в збережені");
-//       }
+export default function ButtonAddToBookmarks({
+  articleId,
+  variant = "full",
+}: ButtonAddToBookmarksProps) {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-//       setIsSaved((prev) => !prev);
-//     } catch (error) {
-//       const errorMessage =
-//         error instanceof Error ? error.message : "Щось пішло не так. Спробуйте пізніше.";
-//       toast.error(errorMessage);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
+  const [isSaved, setIsSaved] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-//   return (
-//     <>
-//       <button
-//         type="button"
-//         onClick={handleClick}
-//         disabled={isLoading}
-//         aria-label={isSaved ? "Remove from bookmarks" : "Add to bookmarks"}
-//         className={`${css.saveButton} ${isSaved ? css.active : ""} ${
-//           isLoading ? css.loading : ""
-//         }`}
-//       >
-//         {isLoading ? (
-//           <span className={css.spinner} />
-//         ) : (
-//           <svg className={css.icon} width="24" height="24" viewBox="0 0 24 24">
-//             <use xlinkHref="/icons.svg#icon-bookmark" />
-//           </svg>
-//         )}
-//       </button>
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
 
-//       {isModalOpen && <ErrorSaveModal onClose={() => setIsModalOpen(false)} />}
-//     </>
-//   );
-// }
+    let isCancelled = false;
+
+    const checkSavedStatus = async () => {
+      setIsChecking(true);
+
+      try {
+        const saved = await checkIsArticleSaved(articleId);
+
+        if (!isCancelled) {
+          setIsSaved(saved);
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          setErrorMessage(getErrorMessage(error));
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsChecking(false);
+        }
+      }
+    };
+
+    checkSavedStatus();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [articleId, isAuthenticated]);
+
+  const handleClick = async () => {
+    // Не дозволяємо користувачу додавати статтю до збережених, якщо він не авторизований. Відкриваємо модальне вікно з повідомленням про помилку.
+    if (!isAuthenticated) {
+      setIsModalOpen(true);
+      return;
+    }
+
+    setIsLoading(true);
+    setErrorMessage("");
+
+    try {
+      if (isSaved) {
+        await removeArticleFromSaved(articleId);
+        setIsSaved(false);
+      } else {
+        await addArticleToSaved(articleId);
+        setIsSaved(true);
+      }
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const isIcon = variant === "icon";
+
+  return (
+    <>
+      <Button
+        className={isIcon ? css.saveButtonIcon : css.saveButtonFull}
+        type="button"
+        fullWidth={!isIcon}
+        size={isIcon ? "sm" : "md"}
+        disabled={isChecking}
+        isLoading={isLoading}
+        loadingText={isIcon ? "" : isSaved ? "Removing..." : "Saving..."}
+        aria-pressed={isSaved}
+        aria-label={isIcon ? (isSaved ? "Remove from saved" : "Save article") : undefined}
+        onClick={handleClick}
+      >
+        {!isIcon && (isSaved ? "Saved" : "Save")}
+
+        <svg
+          className={`${css.bookmarkIcon} ${isSaved ? css.bookmarkIconSaved : ""}`}
+          aria-hidden="true"
+        >
+          <use href="/sprite.svg#icon-bookmark" />
+        </svg>
+      </Button>
+
+      {isModalOpen && <ErrorSaveModal onClose={() => setIsModalOpen(false)} />}
+
+      <ErrorNotification message={errorMessage} onClose={() => setErrorMessage("")} />
+    </>
+  );
+}

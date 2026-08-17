@@ -3,6 +3,8 @@
 import ArticlesList from "@/components/ArticlesList/ArticlesList";
 import SectionTitle from "@/components/SectionTitle/SectionTitle";
 import { useEffect, useState } from "react";
+import { Oval } from "react-loader-spinner";
+import css from "./page.module.css";
 
 type Article = {
   _id: string;
@@ -104,10 +106,10 @@ export default function ArticlesPage() {
       setPage(data.page);
       setTotalPages(data.totalPages);
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
+      // window.scrollTo({
+      //   top: 0,
+      //   behavior: "smooth",
+      // });
     } catch {
       setError("Failed to load more articles.");
     } finally {
@@ -118,10 +120,10 @@ export default function ArticlesPage() {
   const hasMoreArticles = page < totalPages;
 
   return (
-    <main>
+    <div className={css.page}>
       <SectionTitle>Articles</SectionTitle>
 
-      <div>
+      <div className={css.filters}>
         <p>{totalArticles} articles</p>
 
         <select value={filter} onChange={handleFilterChange}>
@@ -133,18 +135,34 @@ export default function ArticlesPage() {
       {error && <p>{error}</p>}
 
       {isLoading ? (
-        <p>Loading...</p>
+        <div className={css.loadingWrapper}>
+          <Oval
+            height={60}
+            width={60}
+            color="var(--green)"
+            secondaryColor="#D1E0D8"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+            visible={true}
+            ariaLabel="oval-loading"
+          />
+        </div>
       ) : (
         <>
           <ArticlesList articles={articles} />
 
           {hasMoreArticles && (
-            <button type="button" onClick={handleLoadMore} disabled={isLoadingMore}>
+            <button
+              type="button"
+              onClick={handleLoadMore}
+              disabled={isLoadingMore}
+              className={css.loadMoreButton}
+            >
               {isLoadingMore ? "Loading..." : "Load More"}
             </button>
           )}
         </>
       )}
-    </main>
+    </div>
   );
 }

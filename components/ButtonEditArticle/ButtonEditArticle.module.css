@@ -1,0 +1,26 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border: 1px solid #374F42;
+  border-radius: 64px;
+  height: 38px;
+  font-family: var(--font-family);
+  font-weight: 700;
+  gap: 8px;
+  color: var(--black);
+  transition: background-color 0.2s ease;
+}
+
+.button:hover,
+.button:focus {
+  background-color: var(--light-green);
+}
+
+.icon {
+  fill: none;
+  display: grid;
+  place-items: center;
+  stroke: currentColor;
+}

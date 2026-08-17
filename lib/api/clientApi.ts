@@ -18,11 +18,31 @@ export type AuthorsResponse = {
   users: Author[];
 };
 
+export type UserResponse = {
+  user: Author;
+};
+
 export const fetchAuthorsClient = async (
   page = 1,
   perPage = 20,
 ): Promise<AuthorsResponse> => {
   const res = await api.get<AuthorsResponse>("/authors", {
+    params: { page, perPage },
+  });
+  return res.data;
+};
+
+export const fetchAuthorClient = async (id: string): Promise<Author> => {
+  const res = await api.get<UserResponse>(`/users/${id}`);
+  return res.data.user;
+};
+
+export const fetchAuthorArticlesClient = async (
+  authorId: string,
+  page = 1,
+  perPage = 12
+): Promise<ArticlesResponse> => {
+  const res = await api.get<ArticlesResponse>(`/users/${authorId}/articles`, {
     params: { page, perPage },
   });
   return res.data;
@@ -147,12 +167,9 @@ export const fetchUserArticles = async (
   page = 1,
   perPage = 12,
 ): Promise<ArticlesResponse> => {
-  const res = await api.get<ArticlesResponse>(
-    `/users/${userId}/articles`,
-    {
-      params: { page, perPage },
-    },
-  );
+  const res = await api.get<ArticlesResponse>(`/users/${userId}/articles`, {
+    params: { page, perPage },
+  });
 
   return res.data;
 };
@@ -162,9 +179,41 @@ export const fetchSavedArticles = async (
   page = 1,
   perPage = 12,
 ): Promise<ArticlesResponse> => {
-  const res = await api.get<ArticlesResponse>('/users/me/saved-articles', {
+  const res = await api.get<ArticlesResponse>("/users/me/saved-articles", {
     params: { page, perPage },
   });
 
   return res.data;
+};
+
+// Перевіряємо, чи знаходиться конкретна статья в збережених.
+export const checkIsArticleSaved = async (articleId: string): Promise<boolean> => {
+  // Спочатку перевіряємо першу сторінку збережених статей, якщо там немає — ідемо по всіх сторінках.
+  let page = 1;
+  let totalPages = 1;
+
+  do {
+    const data = await fetchSavedArticles(page, 20);
+
+    const isSaved = data.articles.some((article) => article._id === articleId);
+
+    if (isSaved) {
+      return true;
+    }
+
+    totalPages = data.totalPages;
+    page += 1;
+  } while (page <= totalPages);
+
+  return false;
+};
+
+// Додавання статті до збережених.
+export const addArticleToSaved = async (articleId: string): Promise<void> => {
+  await api.post(`/users/saved/${articleId}`);
+};
+
+// Видалення статті зі збережених.
+export const removeArticleFromSaved = async (articleId: string): Promise<void> => {
+  await api.delete(`/users/saved/${articleId}`);
 };

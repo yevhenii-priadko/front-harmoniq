@@ -1,21 +1,3 @@
-:root {
-  --green: #649179;
-  --black: #070721;
-  --light-green: #d1e0d8;
-  --red: #ad6a6c;
-  --purple: #7678ed;
-  --white: #f7fffb;
-  --green-darker: #374f42;
-  --gray: #595d62;
-  --light-gray: #9f9f9f;
-}
-
-:root {
-  --font-family: "Manrope", sans-serif;
-  --second-family: "DM Sans", sans-serif;
-  --third-family: "Noto Sans", sans-serif;
-}
-
 .label,
 .inputTitle,
 .submit {
@@ -40,6 +22,13 @@
   display: none;
 }
 
+.error {
+  color: var(--red);
+  font-size: 14px;
+  margin-top: -16px;
+  margin-bottom: 16px;
+}
+
 .uploadLabel {
   display: flex;
   justify-content: center;
@@ -62,20 +51,13 @@
 
 .previewImage {
   width: 100%;
-  max-width: 361px;
-  height: 233px;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
 }
 
 .cameraIcon {
   width: 80px;
   height: 80px;
-}
-
-.previewImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .label {
@@ -150,55 +132,73 @@
 @media (min-width: 768px) {
   .container {
     padding: 48px 32px;
-    justify-items: start;
-    max-width: 1120px;
+    justify-items: stretch;
+    max-width: 768px;
     margin: 0 auto;
     width: 100%;
   }
   .wrapper {
     display: flex;
     gap: 24px;
+    align-items: flex-start;
+  }
+  .titleWrapper {
+    flex: 1;
+    min-width: 0;
+  }
+  .inputTitle {
+    width: 100%;
   }
   .title {
     text-align: left;
   }
   .uploadLabel {
     min-width: 340px;
-    max-height: 219px;
-  }
-  .previewImage {
-    min-width: 340px;
+    height: 219px;
     max-height: 219px;
   }
   .description {
     width: 100%;
-    max-width: 704px;
   }
   .submit {
     width: 100%;
-    max-width: 704px;
   }
 }
 
 @media (min-width: 1440px) {
   .container {
-    padding: 48px 107px;
+    max-width: 1440px;
+    padding: 48px 108px;
   }
   .wrapper {
-    flex-direction: row-reverse;
-    height: 81px;
+    position: relative;
     margin-bottom: 32px;
   }
-  .inputTitle,
-  .description,
+  .titleWrapper {
+    flex: none;
+    width: 809px;
+  }
+  .inputTitle {
+    margin-bottom: 0;
+  }
+  .description {
+    width: 809px;
+    max-width: 809px;
+    margin-bottom: 32px;
+  }
   .submit {
-    min-width: 809px;
+    width: 809px;
+    max-width: 809px;
   }
   .uploadLabel {
-    margin-top: 32px;
-  }
-  .previewImage {
-    margin-top: 32px;
+    position: absolute;
+    top: 32px;
+    right: 0;
+    width: 391px;
+    height: 280px;
+    min-width: 0;
+    max-height: none;
+    margin: 0;
   }
   .uploadLabel:hover {
     background-color: #9f9f9f;

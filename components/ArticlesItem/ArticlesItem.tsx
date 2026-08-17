@@ -1,7 +1,10 @@
+"use client";
 import css from "./ArticlesItem.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import ButtonAddToBookmarks from "../ButtonAddToBookmarks/ButtonAddToBookmarks";
+import ButtonEditArticle from "@/components/ButtonEditArticle/ButtonEditArticle";
+import { useAuthStore } from "@/lib/store/authStore";
 
 interface ArticlesItemProps {
   id: string;
@@ -9,6 +12,7 @@ interface ArticlesItemProps {
   description: string;
   photo: string;
   userName: string;
+  userId: string; // Додано userId для перевірки авторства
 }
 
 export default function ArticlesItem({
@@ -17,7 +21,12 @@ export default function ArticlesItem({
   description,
   photo,
   userName,
+  userId,
 }: ArticlesItemProps) {
+
+  const user = useAuthStore((state) => state.user);
+  const isAuthor = (user && user._id === userId) || false;
+
   return (
     <li className={css.articleItem}>
       <div className={css.articleItem__image}>
@@ -33,8 +42,7 @@ export default function ArticlesItem({
           Learn More
         </Link>
         <ButtonAddToBookmarks articleId={id} variant="icon" />
-
-        {/* <ButtonAddToBookmarks articleId={id} /> */}
+        {isAuthor && <ButtonEditArticle className={css.edit} articleId={id} showText={false} />}
       </div>
     </li>
   );

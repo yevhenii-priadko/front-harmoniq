@@ -40,7 +40,7 @@ export const fetchAuthorClient = async (id: string): Promise<Author> => {
 export const fetchAuthorArticlesClient = async (
   authorId: string,
   page = 1,
-  perPage = 12
+  perPage = 12,
 ): Promise<ArticlesResponse> => {
   const res = await api.get<ArticlesResponse>(`/users/${authorId}/articles`, {
     params: { page, perPage },
@@ -58,12 +58,10 @@ export type ArticlesResponse = {
   articles: Article[];
 };
 
-// ⚠️ Mongoose-модель Article (models/article.js) на бекенді зараз містить
-// лише title/description/photo/userId — полів date/author там НЕМАЄ,
-// хоча Joi-валідація на POST їх вимагає. Тобто ці поля можна відправити
-// (валідація пройде), але вони НЕ збережуться і не повернуться в GET,
-// поки хтось не додасть їх у Mongoose-схему. Тримаємо в типі як optional,
-// щоб UI не падав, коли їх немає у відповіді.
+// date/author є в Mongoose-схемі Article (models/article.js) як required —
+// бекенд завжди їх повертає для статей, створених після PR з полями дати/автора.
+// Лишаємо тут optional як підстраховку: у старих статтях, створених до того,
+// як ці поля з'явились у схемі, значення в базі можуть бути відсутні.
 export type Article = {
   _id: string;
   title: string;
@@ -76,20 +74,13 @@ export type Article = {
   updatedAt: string;
 };
 
-// ⚠️ ТИМЧАСОВЕ РІШЕННЯ: Cloudinary в проєкті ВЖЕ підключений і реально працює
-// (src/utils/saveFileToCloudinary.js, використовується для аватара користувача —
-// PATCH/POST /users/avatar). Але цю саму функцію поки НЕ підключено до статей:
-// у articlesController.js/articlesRoutes.js немає ні виклику saveFileToCloudinary,
-// ні multer у ланцюжку POST /articles. Крім того, функцію не можна переносити
-// на статті "як є" — вона хардкодить folder: 'harmoniq/avatars' та
-// public_id: `avatar_${userId}` з overwrite: true (тобто в одного юзера завжди
-// лише один файл-аватар). Для статей знадобиться свій public_id (наприклад
-// на основі article._id, а не userId) і folder: 'harmoniq/articles', інакше
-// друга стаття того самого автора перезапише фото першої в Cloudinary.
-// Поки цього не підключили — POST /articles валідує `photo` як звичайний рядок
-// (URL), тому зараз поле фото у формі має бути текстовим інпутом для посилання
-// на картинку, а не file input.
-export type ArticleFormValues = {
+// Пейлоад для PATCH /articles/:id (updateArticle нижче). Назва навмисно
+// відрізняється від ArticleFormValues у components/ArticleForm/ArticleForm.tsx —
+// та описує стан самої форми (photo: File | string | null, date/author
+// опціональні), а це — вже готовий до відправки об'єкт (photo завжди URL-рядок,
+// бо на момент виклику updateArticle фото або вже завантажене на Cloudinary,
+// або лишилось старим значенням).
+export type UpdateArticlePayload = {
   title: string;
   description: string;
   date: string;
@@ -108,7 +99,7 @@ export const fetchArticlesClient = async (
   return res.data;
 };
 
-// Створення статті — AddArticleForm, кнопка Publish.
+// Створення статті — ArticleForm на /articles/new, кнопка Publish.
 
 export type CreateArticlePayload = {
   title: string;
@@ -130,13 +121,12 @@ export const createArticle = async (values: CreateArticlePayload): Promise<Artic
   return res.data;
 };
 
-// ⚠️ НЕ ПРАЦЮЄ ЗАРАЗ: на бекенді немає роута PATCH /articles/:id
-// (ні в routes/articlesRoutes.js, ні в controllers/articlesController.js).
-// Викликати цю функцію можна, але вона гарантовано поверне 404,
-// поки хтось не реалізує редагування на бекенді.
+// PATCH /articles/:id реалізовано на бекенді (PR #21 + фікс #22, #23).
+// Поле author у values бекенд ігнорує — він завжди підставляє ім'я
+// з автентифікованої сесії, а не з тіла запиту.
 export const updateArticle = async (
   id: string,
-  values: ArticleFormValues,
+  values: UpdateArticlePayload,
 ): Promise<Article> => {
   const res = await api.patch<Article>(`/articles/${id}`, values);
   return res.data;

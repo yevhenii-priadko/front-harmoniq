@@ -37,7 +37,7 @@ export default function ClientEdit({ articleId, initialValues }: ClientEditProps
       title: values.title,
       description: values.description,
       date: values.date ?? new Date().toISOString().slice(0, 10),
-      author: values.author ?? "Unknown",
+      author: values.author ?? "",
       photo: typeof values.photo === "string" ? values.photo : "",
     };
 

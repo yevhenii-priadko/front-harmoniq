@@ -2,6 +2,7 @@ import css from "./ArticlesItem.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import ButtonAddToBookmarks from "../ButtonAddToBookmarks/ButtonAddToBookmarks";
+import ButtonEditArticle from '../ButtonEditArticle/ButtonEditArticle';
 
 interface ArticlesItemProps {
   id: string;
@@ -9,6 +10,7 @@ interface ArticlesItemProps {
   description: string;
   photo: string;
   userName: string;
+  action?: "bookmark" | "edit";
 }
 
 export default function ArticlesItem({
@@ -17,6 +19,7 @@ export default function ArticlesItem({
   description,
   photo,
   userName,
+  action = "bookmark",
 }: ArticlesItemProps) {
   return (
     <li className={css.articleItem}>
@@ -30,9 +33,13 @@ export default function ArticlesItem({
       </div>
       <div className={css.articleItem__buttons}>
         <Link href={`/articles/${id}`} className={css.articleItem__button}>
-          Learn More
+          Learn more
         </Link>
-        <ButtonAddToBookmarks articleId={id} variant="icon" />
+        {action === 'edit' ? (
+          <ButtonEditArticle articleId={id} />
+        ) : (
+          <ButtonAddToBookmarks articleId={id} variant="icon" />
+        )}
 
         {/* <ButtonAddToBookmarks articleId={id} /> */}
       </div>

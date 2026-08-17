@@ -17,6 +17,10 @@
   margin-bottom: 16px;
 }
 
+.emptyFilters select {
+  display: none;
+}
+
 .filters p {
   font-family: var(--font-family);
   font-weight: 700;
@@ -84,5 +88,9 @@
 @media screen and (min-width: 1440px) {
   .page {
     padding: 48px 108px;
+  }
+
+  .emptyFilters select {
+    display: block;
   }
 }

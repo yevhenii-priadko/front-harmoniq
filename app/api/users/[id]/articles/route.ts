@@ -21,6 +21,11 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
   const perPage = searchParams.get('perPage') ?? '12';
 
   try {
+    console.log('FRONT ROUTE PAGE:', page);
+
+    console.log('FRONT ROUTE PER PAGE:', perPage);
+
+
     const response = await fetch(
       `${BACKEND_URL}/users/${id}/articles?page=${page}&perPage=${perPage}`,
       {

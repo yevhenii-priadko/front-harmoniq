@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useAuthStore } from '@/lib/store/authStore';
 import { useProfileStore } from '@/lib/store/profileStore';
+import css from './ProfileLayout.module.css';
 
 export default function ProfilePage() {
   const user = useAuthStore((state) => state.user);
@@ -19,28 +20,33 @@ export default function ProfilePage() {
     user.avatar.startsWith('/'));
 
   return (
-    <div>
-      <h1>My Profile</h1>
+  <div className={css.profile}>
+    <h1 className={css.title}>My Profile</h1>
 
-      <div>
-        {hasValidAvatar ? (
-          <Image
-            src={user.avatar!}
-            alt={`${user.username} avatar`}
-            width={100}
-            height={100}
-          />
-        ) : (
-          <div aria-label="User avatar unavailable" />
-        )}
+    <div className={css.userInfo}>
+      {hasValidAvatar ? (
+        <Image
+          className={css.avatar}
+          src={user.avatar!}
+          alt={`${user.username} avatar`}
+          width={100}
+          height={100}
+        />
+      ) : (
+        <div
+          className={css.avatarPlaceholder}
+          aria-label="User avatar unavailable"
+        />
+      )}
 
-        <div>
-          <p>{user.username}</p>
-          <p>
-            {totalArticles} {totalArticles === 1 ? 'article' : 'articles'}
-          </p>
-        </div>
+      <div className={css.userDetails}>
+        <p className={css.username}>{user.username}</p>
+
+        <p className={css.articleCount}>
+          {totalArticles} {totalArticles === 1 ? 'article' : 'articles'}
+        </p>
       </div>
     </div>
-  );
+  </div>
+);
 }

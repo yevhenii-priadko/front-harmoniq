@@ -1,0 +1,26 @@
+.editButton {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--green-darker);
+    background-color: transparent;
+    color: var(--green-darker);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.editButton:hover,
+.editButton:focus {
+    background-color: var(--white);
+}
+
+.editIcon {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    fill: none;
+}

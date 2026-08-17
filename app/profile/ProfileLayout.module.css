@@ -1,0 +1,138 @@
+.profileSection {
+    width: 100%;
+    margin-top: 46px;
+    margin-bottom: 46px;
+    padding: 0px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.title {
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 40px;
+    color: #000;
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.userDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+}
+
+.avatar {
+    width: 137px;
+    height: 137px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.username {
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--black);
+}
+
+.articleCount {
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 18px;
+    color: #000;
+}
+
+.myArticlesEmpty {
+    margin-top: 40px;
+}
+
+.savedArticlesEmpty {
+    margin-top: 51px;
+}
+
+.profileArticlesList {
+    margin-top: 24px;
+}
+
+.loadingWrapper {
+    display: flex;
+    justify-content: center;
+    padding: 48px 0;
+}
+
+.loadMoreButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 57px;
+    padding: 16px;
+    border-radius: 64px;
+    background-color: var(--green);
+    color: var(--white);
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 18px;
+    transition:
+        background-color 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.loadMoreButton:hover:not(:disabled) {
+    background-color: var(--green-darker);
+}
+
+.loadMoreButton:focus-visible {
+    outline: none;
+    box-shadow:
+        0 0 0 6px rgba(78, 70, 180, 0.12),
+        0 0 0 2px var(--white);
+}
+
+.loadMoreButton:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+@media screen and (min-width: 768px) {
+    .profileSection {
+        padding: 0px 32px;
+    }
+
+    .savedArticlesEmpty {
+        margin-top: 40px;
+    }
+
+    .loadMoreButton {
+        width: 289px;
+        margin-inline: auto;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    .profileSection {
+        padding: 0;
+        max-width: 1224px;
+        margin-inline: auto;
+    }
+
+    .myArticlesEmpty,
+    .savedArticlesEmpty {
+        margin-top: 16px;
+    }
+}

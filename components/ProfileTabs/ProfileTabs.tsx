@@ -17,7 +17,7 @@ export default function ProfileTabs({
   );
 
   return (
-    <div>
+    <div className={css.tabsContainer}>
       <div className={css.tabs}>
         <button
           type='button'

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Oval } from 'react-loader-spinner';
 import ArticlesList from '@/components/ArticlesList/ArticlesList';
 import {
   fetchUserArticles,
@@ -9,6 +10,8 @@ import {
 import { useAuthStore } from '@/lib/store/authStore';
 import ErrorNotification from '@/components/ErrorNotification/ErrorNotification';
 import { useProfileStore } from '@/lib/store/profileStore';
+import EmptyState from '@/components/EmptyState/EmptyState';
+import css from '../ProfileLayout.module.css';
 
 const PER_PAGE = 12;
 
@@ -39,7 +42,7 @@ export default function MyArticlesPage() {
         setTotalArticles(data.totalArticles);
 
         setArticles(data.articles);
-        setPage(data.page);
+        setPage(Number(data.page));
         setTotalPages(data.totalPages);
       } catch {
         setError('Failed to load your articles.');
@@ -72,13 +75,9 @@ export default function MyArticlesPage() {
         ...prevArticles,
         ...data.articles,
       ]);
-      setPage(data.page);
+      setPage(Number(data.page));
       setTotalPages(data.totalPages);
 
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
     } catch {
       setError('Failed to load more articles.');
     } finally {
@@ -89,7 +88,20 @@ export default function MyArticlesPage() {
   const hasMoreArticles = page < totalPages;
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className={css.loadingWrapper}>
+        <Oval
+          height={60}
+          width={60}
+          color="var(--green)"
+          secondaryColor="#D1E0D8"
+          strokeWidth={2}
+          strokeWidthSecondary={2}
+          visible={true}
+          ariaLabel="oval-loading"
+        />
+      </div>
+    );
   }
 
   return (
@@ -99,10 +111,23 @@ export default function MyArticlesPage() {
         onClose={() => setError('')}
       />
 
-      <ArticlesList articles={articles} />
+      {!error && articles.length === 0 ? (
+        <div className={css.myArticlesEmpty}>
+          <EmptyState
+            description="Write your first article"
+            buttonText="Create an article"
+            href="/articles/new"
+          />
+        </div>
+      ) : articles.length > 0 ? (
+        <div className={css.profileArticlesList}>
+          <ArticlesList articles={articles} action="edit" />
+        </div>
+      ) : null}
 
       {hasMoreArticles && (
         <button
+          className={css.loadMoreButton}
           type="button"
           onClick={handleLoadMore}
           disabled={isLoadingMore}

@@ -50,25 +50,19 @@
   background-color: var(--light-green);
 }
 
-.loadMoreButton{
+.loadMoreButton {
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 48px;
   border-radius: 64px;
-  padding: 16px;
-  width: 361px;
-  height: 57px;
   background-color: var(--green);
-
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 18px;
   color: var(--white);
-
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+  font-family: var(--font-family);
+  height: 38px;
+  width: 100%;
+  font-weight: 700;
+  transition: background-color 0.2s ease;
 }
 
 .loadMoreButton:hover:not(:disabled),
@@ -85,14 +79,16 @@
   .page {
     padding: 48px 32px;
   }
-
-  .loadMoreButton{
-    width: 390px;
+  .loadMoreButton {
+    width: 290px;
   }
 }
 
 @media screen and (min-width: 1440px) {
   .page {
     padding: 48px 108px;
+  }
+  .loadMoreButton {
+    width: 392px;
   }
 }

@@ -21,6 +21,8 @@ export default async function EditArticlePage({ params }: Props) {
     title: article.title ?? "",
     description: article.description ?? "",
     photo: article.photo ?? null,
+    author: article.author ?? "",
+    date: article.date ?? "",
   };
 
   return <ClientEdit articleId={articleId} initialValues={initialValues} />;

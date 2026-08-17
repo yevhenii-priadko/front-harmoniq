@@ -50,24 +50,30 @@
   background-color: var(--light-green);
 }
 
-.loadMoreButton {
-  display: inline-flex;
+.loadMoreButton{
+  display: flex;
   align-items: center;
   justify-content: center;
-  margin: 24px auto 0;
-  padding: 8px 24px;
-  border: 1px solid var(--green-darker);
+  margin: 0 auto 48px;
   border-radius: 64px;
-  background-color: transparent;
-  color: var(--green-darker);
+  padding: 16px;
+  width: 361px;
+  height: 57px;
+  background-color: var(--green);
+
+  font-family: var(--font-family);
   font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  font-size: 18px;
+  color: var(--white);
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .loadMoreButton:hover:not(:disabled),
 .loadMoreButton:focus:not(:disabled) {
-  background-color: var(--white);
+  background-color: var(--green-darker);
 }
 
 .loadMoreButton:disabled {
@@ -78,6 +84,10 @@
 @media screen and (min-width: 768px) {
   .page {
     padding: 48px 32px;
+  }
+
+  .loadMoreButton{
+    width: 390px;
   }
 }
 

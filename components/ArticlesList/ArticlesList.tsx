@@ -18,10 +18,9 @@ type Article = {
 
 type ArticlesListProps = {
   articles: Article[];
-  action?: 'bookmark' | 'edit';
 };
 
-export default function ArticlesList({ articles, action = 'bookmark' }: ArticlesListProps) {
+export default function ArticlesList({ articles }: ArticlesListProps) {
   if (!articles.length) {
     return <p>No articles found.</p>;
   }
@@ -36,7 +35,7 @@ export default function ArticlesList({ articles, action = 'bookmark' }: Articles
           description={article.description}
           photo={article.photo}
           userName={article.author ?? "Harmoniq author"}
-          action={action}
+          userId={article.userId}
         />
       ))}
     </ul>

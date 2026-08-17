@@ -121,7 +121,7 @@ export default function MyArticlesPage() {
         </div>
       ) : articles.length > 0 ? (
         <div className={css.profileArticlesList}>
-          <ArticlesList articles={articles} action="edit" />
+          <ArticlesList articles={articles} />
         </div>
       ) : null}
 

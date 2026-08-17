@@ -55,23 +55,23 @@
 }
 
 .loadMoreButton {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  margin: 24px auto 0;
-  padding: 8px 24px;
-  border: 1px solid var(--green-darker);
+  margin: 0 auto 48px;
   border-radius: 64px;
-  background-color: transparent;
-  color: var(--green-darker);
+  background-color: var(--green);
+  color: var(--white);
+  font-family: var(--font-family);
+  height: 38px;
+  width: 100%;
   font-weight: 700;
-  cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .loadMoreButton:hover:not(:disabled),
 .loadMoreButton:focus:not(:disabled) {
-  background-color: var(--white);
+  background-color: var(--green-darker);
 }
 
 .loadMoreButton:disabled {
@@ -83,11 +83,17 @@
   .page {
     padding: 48px 32px;
   }
+  .loadMoreButton {
+    width: 290px;
+  }
 }
 
 @media screen and (min-width: 1440px) {
   .page {
     padding: 48px 108px;
+  }
+  .loadMoreButton {
+    width: 392px;
   }
 
   .emptyFilters select {

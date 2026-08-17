@@ -11,17 +11,16 @@ type AuthorsItemProps = {
 const getAvatarSrc = (avatar?: string | null) => {
   const trimmedAvatar = avatar?.trim();
 
-  if (!trimmedAvatar || trimmedAvatar === 'https:URL') {
+  if (!trimmedAvatar || trimmedAvatar === "https:URL") {
     return null;
-  }
-
-  if (trimmedAvatar.startsWith('/')) {
-    return trimmedAvatar;
   }
 
   try {
     const url = new URL(trimmedAvatar);
-    return url.hostname === 'res.cloudinary.com' ? trimmedAvatar : null;
+
+    const allowedDomains = ["res.cloudinary.com", "ftp.goit.study"];
+
+    return allowedDomains.includes(url.hostname) ? trimmedAvatar : null;
   } catch {
     return null;
   }

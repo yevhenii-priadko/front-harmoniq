@@ -1,21 +1,25 @@
-import Link from 'next/link';
-import css from './ButtonEditArticle.module.css';
+import css from "./ButtonEditArticle.module.css";
+import Link from "next/link";
 
-type ButtonEditArticleProps = {
+interface EditArticleButtonProps {
   articleId: string;
-};
+  showText?: boolean;
+  className?: string;
+}
 
-export default function ButtonEditArticle({
+export default function EditArticleButton({
   articleId,
-}: ButtonEditArticleProps) {
+  showText = true,
+  className = "",
+}: EditArticleButtonProps) {
+  const editUrl = `/articles/${articleId}/edit`;
+
   return (
-    <Link
-      href={`/articles/${articleId}/edit`}
-      className={css.editButton}
-      aria-label="Edit article"
-    >
-      <svg className={css.editIcon} aria-hidden="true">
-        <use href="/sprite.svg#icon-pencil" />
+    <Link href={editUrl} className={`${css.button} ${className}`}>
+
+      {showText && <span className={css.text}>Edit</span>}
+      <svg width={24} height={24} className={css.icon}>
+        <use href="/sprite.svg#icon-edit"></use>
       </svg>
     </Link>
   );

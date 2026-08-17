@@ -107,10 +107,10 @@ export default function ArticlesPage() {
       setPage(data.page);
       setTotalPages(data.totalPages);
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
+      // window.scrollTo({
+      //   top: 0,
+      //   behavior: "smooth",
+      // });
     } catch {
       setError("Failed to load more articles.");
     } finally {

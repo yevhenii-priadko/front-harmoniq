@@ -79,12 +79,24 @@
 
 .articleItem__button:hover,
 .articleItem__button:focus {
-  background-color: #f7fffb;
+  background-color: var(--white);
 }
 
 .icon {
   fill: currentColor;
   display: block;
+}
+
+.articleItem .edit {
+  max-width: 40px;
+  height: 40px;
+  background-color: var(--light-green);
+  transition: background-color 0.2s ease;
+}
+
+.articleItem .edit:hover,
+.articleItem .edit:focus {
+  background-color: var(--white);
 }
 
 @media screen and (min-width: 768px) {

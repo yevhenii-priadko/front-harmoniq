@@ -9,6 +9,7 @@ type FormFieldProps = {
   value: string;
   placeholder?: string;
   autoComplete?: string;
+  autoFocus?: boolean;
   maxLength?: number;
   error?: string;
   onChange: ChangeEventHandler<HTMLInputElement>;
@@ -23,6 +24,7 @@ export default function FormField({
   value,
   placeholder,
   autoComplete,
+  autoFocus = false,
   maxLength,
   error,
   onChange,
@@ -44,6 +46,7 @@ export default function FormField({
         value={value}
         placeholder={placeholder}
         autoComplete={autoComplete}
+        autoFocus={autoFocus}
         maxLength={maxLength}
         aria-invalid={Boolean(error)}
         aria-describedby={messageId}

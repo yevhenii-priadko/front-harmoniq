@@ -5,7 +5,7 @@ export type AuthUser = {
   _id: string;
   username: string;
   email: string;
-  avatar?: string;
+  avatar?: string | null;
 };
 
 interface AuthStore {

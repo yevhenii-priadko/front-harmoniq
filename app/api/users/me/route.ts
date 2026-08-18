@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { isAxiosError } from "axios";
-import { api } from "../../../api";
+import { api } from "../../api";
 
 export async function PATCH(request: Request) {
   try {

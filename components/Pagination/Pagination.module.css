@@ -1,0 +1,99 @@
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    width: 100%;
+    max-width: 348px;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+}
+
+.arrowItem,
+.pageItem,
+.breakItem {
+    display: flex;
+    flex: 0 0 40px;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+}
+
+.pageLink,
+.breakLink,
+.arrowLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.pageLink,
+.breakLink {
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 155%;
+    text-align: center;
+    color: var(--black);
+}
+
+.active .pageLink {
+    font-weight: 700;
+    color: var(--white);
+    background-color: var(--green);
+}
+
+.arrowLink {
+    color: var(--white);
+    background-color: var(--green);
+}
+
+.longArrow {
+    width: 24px;
+    height: 24px;
+}
+
+
+@media screen and (min-width: 375px) {
+    .pagination {
+        gap: 4px;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    .pagination {
+        max-width: 390px;
+        height: 32px;
+        gap: 4px;
+    }
+
+    .arrowItem,
+    .pageItem,
+    .breakItem {
+        flex: 0 0 32px;
+        width: 32px;
+        height: 32px;
+    }
+
+    .pagination> :nth-child(2) {
+        margin-left: auto;
+    }
+
+    .pagination> :nth-last-child(2) {
+        margin-right: auto;
+    }
+
+    .pageLink,
+    .breakLink,
+    .arrowLink {
+        width: 100%;
+        height: 100%;
+    }
+}

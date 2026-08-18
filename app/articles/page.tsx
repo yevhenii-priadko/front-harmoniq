@@ -5,6 +5,7 @@ import EmptyState from "@/components/EmptyState/EmptyState";
 import SectionTitle from "@/components/SectionTitle/SectionTitle";
 import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
+import Pagination from "@/components/Pagination/Pagination";
 import css from "./page.module.css";
 
 type Article = {
@@ -37,7 +38,6 @@ export default function ArticlesPage() {
   const [filter, setFilter] = useState<"all" | "popular">("all");
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function ArticlesPage() {
         setError("");
 
         const response = await fetch(
-          `/api/articles?filter=${filter}&page=1&perPage=${PER_PAGE}`,
+          `/api/articles?filter=${filter}&page=${page}&perPage=${PER_PAGE}`,
           {
             cache: "no-store",
           },
@@ -62,7 +62,6 @@ export default function ArticlesPage() {
         setArticles(data.articles);
         setTotalArticles(data.totalArticles);
         setTotalPages(data.totalPages);
-        setPage(1);
       } catch {
         setError("Failed to load articles.");
       } finally {
@@ -71,7 +70,7 @@ export default function ArticlesPage() {
     };
 
     getArticles();
-  }, [filter]);
+  }, [filter, page]);
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newFilter = event.target.value as "all" | "popular";
@@ -80,45 +79,22 @@ export default function ArticlesPage() {
       return;
     }
 
+    setPage(1);
     setFilter(newFilter);
   };
 
-  const handleLoadMore = async () => {
-    const nextPage = page + 1;
-
-    try {
-      setIsLoadingMore(true);
-      setError("");
-
-      const response = await fetch(
-        `/api/articles?filter=${filter}&page=${nextPage}&perPage=${PER_PAGE}`,
-        {
-          cache: "no-store",
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch more articles");
-      }
-
-      const data: ArticlesResponse = await response.json();
-
-      setArticles((prevArticles) => [...prevArticles, ...data.articles]);
-      setPage(data.page);
-      setTotalPages(data.totalPages);
-
-      // window.scrollTo({
-      //   top: 0,
-      //   behavior: "smooth",
-      // });
-    } catch {
-      setError("Failed to load more articles.");
-    } finally {
-      setIsLoadingMore(false);
+  const handlePageChange = (nextPage: number) => {
+    if (nextPage === page || nextPage < 1 || nextPage > totalPages) {
+      return;
     }
-  };
 
-  const hasMoreArticles = page < totalPages;
+    setPage(nextPage);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <div className={css.page}>
@@ -161,19 +137,17 @@ export default function ArticlesPage() {
               href="/articles/new"
             />
           ) : articles.length > 0 ? (
-            <ArticlesList articles={articles} />
+            <>
+              <ArticlesList articles={articles} />
+              {totalPages > 1 && (
+                <Pagination
+                  pageCount={totalPages}
+                  currentPage={page}
+                  onPageChange={handlePageChange}
+                />
+              )}
+            </>
           ) : null}
-
-          {hasMoreArticles && (
-            <button
-              type="button"
-              onClick={handleLoadMore}
-              disabled={isLoadingMore}
-              className={css.loadMoreButton}
-            >
-              {isLoadingMore ? "Loading..." : "Load More"}
-            </button>
-          )}
         </>
       )}
     </div>

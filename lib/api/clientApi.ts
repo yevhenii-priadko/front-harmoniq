@@ -1,5 +1,7 @@
 import { api } from "./api";
 import { isAxiosError } from "axios";
+import type { AuthUser } from "@/lib/store/authStore";
+import { buildProfileFormData } from "@/lib/profile/userProfile";
 
 export type Author = {
   _id: string;
@@ -165,6 +167,32 @@ export const uploadAvatar = async (file: File): Promise<string> => {
     }
 
     throw new Error("Unable to upload your photo.");
+  }
+};
+
+type UpdateUserProfileInput = {
+  currentUsername: string;
+  username: string;
+  avatar: File | null;
+};
+
+export const updateUserProfile = async ({
+  currentUsername,
+  username,
+  avatar,
+}: UpdateUserProfileInput): Promise<AuthUser> => {
+  const formData = buildProfileFormData(currentUsername, username, avatar);
+
+  try {
+    const { data } = await api.patch<{ user: AuthUser }>("/users/me", formData);
+
+    return data.user;
+  } catch (error) {
+    if (isAxiosError<{ message?: string }>(error)) {
+      throw new Error(error.response?.data?.message ?? "Unable to update your profile.");
+    }
+
+    throw new Error("Unable to update your profile.");
   }
 };
 

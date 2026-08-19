@@ -1,29 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Author } from '@/lib/api/clientApi';
+import { getAvatarSrc } from '@/lib/profile/userProfile';
 import css from './AuthorsItem.module.css';
 
 type AuthorsItemProps = {
   author: Author;
   priority?: boolean;
-};
-
-const getAvatarSrc = (avatar?: string | null) => {
-  const trimmedAvatar = avatar?.trim();
-
-  if (!trimmedAvatar || trimmedAvatar === "https:URL") {
-    return null;
-  }
-
-  try {
-    const url = new URL(trimmedAvatar);
-
-    const allowedDomains = ["res.cloudinary.com", "ftp.goit.study"];
-
-    return allowedDomains.includes(url.hostname) ? trimmedAvatar : null;
-  } catch {
-    return null;
-  }
 };
 
 const getInitial = (name: string) => name.trim().charAt(0).toUpperCase() || 'A';

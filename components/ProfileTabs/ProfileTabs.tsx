@@ -1,6 +1,7 @@
 'use client';
 
-import { ReactNode, useState } from 'react';
+import { ReactNode, Suspense, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import css from './ProfileTabs.module.css';
 
 type ProfileTabsProps = {
@@ -8,20 +9,45 @@ type ProfileTabsProps = {
   savedArticles: ReactNode;
 };
 
-export default function ProfileTabs({
+type TabKey = 'myArticles' | 'savedArticles';
+
+function ProfileTabsContent({
   myArticles,
   savedArticles,
 }: ProfileTabsProps) {
-  const [activeTab, setActiveTab] = useState<'myArticles' | 'savedArticles'>(
-    'myArticles',
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const [activeTab, setActiveTab] = useState<TabKey>(
+    searchParams.get('tab') === 'savedArticles' ? 'savedArticles' : 'myArticles',
   );
+
+  const handleTabChange = (tab: TabKey) => {
+    if (tab === activeTab) {
+      return;
+    }
+
+    setActiveTab(tab);
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (tab === 'savedArticles') {
+      params.set('tab', 'savedArticles');
+    } else {
+      params.delete('tab');
+    }
+
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  };
 
   return (
     <div className={css.tabsContainer}>
       <div className={css.tabs}>
         <button
           type='button'
-          onClick={() => setActiveTab('myArticles')}
+          onClick={() => handleTabChange('myArticles')}
           className={activeTab === 'myArticles' ? css.active : ''}
         >
           My Articles
@@ -29,7 +55,7 @@ export default function ProfileTabs({
 
         <button
           type='button'
-          onClick={() => setActiveTab('savedArticles')}
+          onClick={() => handleTabChange('savedArticles')}
           className={activeTab === 'savedArticles' ? css.active : ''}
         >
           Saved Articles
@@ -38,5 +64,13 @@ export default function ProfileTabs({
 
       {activeTab === 'myArticles' ? myArticles : savedArticles}
     </div>
+  );
+}
+
+export default function ProfileTabs(props: ProfileTabsProps) {
+  return (
+    <Suspense fallback={null}>
+      <ProfileTabsContent {...props} />
+    </Suspense>
   );
 }

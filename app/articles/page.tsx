@@ -3,7 +3,8 @@
 import ArticlesList from "@/components/ArticlesList/ArticlesList";
 import EmptyState from "@/components/EmptyState/EmptyState";
 import SectionTitle from "@/components/SectionTitle/SectionTitle";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Oval } from "react-loader-spinner";
 import Pagination from "@/components/Pagination/Pagination";
 import css from "./page.module.css";
@@ -29,10 +30,17 @@ type ArticlesResponse = {
 
 const PER_PAGE = 12;
 
-export default function ArticlesPage() {
+function ArticlesPageContent() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [articles, setArticles] = useState<Article[]>([]);
   const [totalArticles, setTotalArticles] = useState(0);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(() => {
+    const urlPage = Number(searchParams.get("page"));
+    return urlPage > 0 ? urlPage : 1;
+  });
   const [totalPages, setTotalPages] = useState(1);
 
   const [filter, setFilter] = useState<"all" | "popular">("all");
@@ -72,6 +80,19 @@ export default function ArticlesPage() {
     getArticles();
   }, [filter, page]);
 
+  const updateUrlPage = (nextPage: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (nextPage > 1) {
+      params.set("page", String(nextPage));
+    } else {
+      params.delete("page");
+    }
+
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  };
+
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newFilter = event.target.value as "all" | "popular";
 
@@ -81,6 +102,7 @@ export default function ArticlesPage() {
 
     setPage(1);
     setFilter(newFilter);
+    updateUrlPage(1);
   };
 
   const handlePageChange = (nextPage: number) => {
@@ -89,6 +111,7 @@ export default function ArticlesPage() {
     }
 
     setPage(nextPage);
+    updateUrlPage(nextPage);
 
     window.scrollTo({
       top: 0,
@@ -151,5 +174,13 @@ export default function ArticlesPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function ArticlesPage() {
+  return (
+    <Suspense fallback={null}>
+      <ArticlesPageContent />
+    </Suspense>
   );
 }

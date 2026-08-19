@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Oval } from "react-loader-spinner";
 import ArticlesList from "@/components/ArticlesList/ArticlesList";
 import { fetchUserArticles, type Article } from "@/lib/api/clientApi";
@@ -8,18 +9,24 @@ import { useAuthStore } from "@/lib/store/authStore";
 import ErrorNotification from "@/components/ErrorNotification/ErrorNotification";
 import { useProfileStore } from "@/lib/store/profileStore";
 import EmptyState from "@/components/EmptyState/EmptyState";
+import Pagination from "@/components/Pagination/Pagination";
 import css from "../ProfileLayout.module.css";
 
 const PER_PAGE = 12;
 
-export default function MyArticlesPage() {
+function MyArticlesPageContent() {
   const user = useAuthStore((state) => state.user);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const [articles, setArticles] = useState<Article[]>([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(() => {
+    const urlPage = Number(searchParams.get("myPage"));
+    return urlPage > 0 ? urlPage : 1;
+  });
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState("");
   const setTotalArticles = useProfileStore((state) => state.setTotalArticles);
 
@@ -33,7 +40,7 @@ export default function MyArticlesPage() {
         setIsLoading(true);
         setError("");
 
-        const data = await fetchUserArticles(user._id, 1, PER_PAGE);
+        const data = await fetchUserArticles(user._id, page, PER_PAGE);
         setTotalArticles(data.totalArticles);
 
         setArticles(data.articles);
@@ -47,32 +54,31 @@ export default function MyArticlesPage() {
     };
 
     loadArticles();
-  }, [user?._id, setTotalArticles]);
+  }, [user?._id, page, setTotalArticles]);
 
-  const handleLoadMore = async () => {
-    if (!user?._id) {
+  const handlePageChange = (nextPage: number) => {
+    if (nextPage === page || nextPage < 1 || nextPage > totalPages) {
       return;
     }
 
-    const nextPage = page + 1;
+    setPage(nextPage);
 
-    try {
-      setIsLoadingMore(true);
-      setError("");
+    const params = new URLSearchParams(searchParams.toString());
 
-      const data = await fetchUserArticles(user._id, nextPage, PER_PAGE);
-
-      setArticles((prevArticles) => [...prevArticles, ...data.articles]);
-      setPage(Number(data.page));
-      setTotalPages(data.totalPages);
-    } catch {
-      setError("Failed to load more articles.");
-    } finally {
-      setIsLoadingMore(false);
+    if (nextPage > 1) {
+      params.set("myPage", String(nextPage));
+    } else {
+      params.delete("myPage");
     }
-  };
 
-  const hasMoreArticles = page < totalPages;
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   if (isLoading) {
     return (
@@ -109,16 +115,21 @@ export default function MyArticlesPage() {
         </div>
       ) : null}
 
-      {hasMoreArticles && (
-        <button
-          className={css.loadMoreButton}
-          type="button"
-          onClick={handleLoadMore}
-          disabled={isLoadingMore}
-        >
-          {isLoadingMore ? "Loading..." : "Load More"}
-        </button>
+      {totalPages > 1 && (
+        <Pagination
+          pageCount={totalPages}
+          currentPage={page}
+          onPageChange={handlePageChange}
+        />
       )}
     </section>
+  );
+}
+
+export default function MyArticlesPage() {
+  return (
+    <Suspense fallback={null}>
+      <MyArticlesPageContent />
+    </Suspense>
   );
 }

@@ -1,16 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import ArticlesList from '@/components/ArticlesList/ArticlesList';
-import Button from '@/components/Button/Button';
 import ErrorNotification from '@/components/ErrorNotification/ErrorNotification';
+import Pagination from '@/components/Pagination/Pagination';
 import {
     fetchAuthorArticlesClient,
     type Author,
     type Article,
     type ArticlesResponse,
 } from '@/lib/api/clientApi';
+import { getAvatarSrc } from '@/lib/profile/userProfile';
 import css from './AuthorProfile.module.css';
 
 const ARTICLES_PER_PAGE = 12;
@@ -21,80 +23,101 @@ type AuthorProfileProps = {
     initialError?: string;
 };
 
-const getAvatarSrc = (avatar?: string | null) => {
-    const trimmedAvatar = avatar?.trim();
-
-    if (!trimmedAvatar || trimmedAvatar === 'https:URL') {
-        return null;
-    }
-
-    if (trimmedAvatar.startsWith('/')) {
-        return trimmedAvatar;
-    }
-
-    try {
-        const url = new URL(trimmedAvatar);
-        return url.hostname === 'res.cloudinary.com' || url.hostname === 'ftp.goit.study'
-            ? trimmedAvatar
-            : null;
-    } catch {
-        return null;
-    }
-};
-
 const getInitial = (name: string) => name.trim().charAt(0).toUpperCase() || 'A';
 
-export default function AuthorProfile({
+function AuthorProfileContent({
     author,
     initialArticlesData,
     initialError = '',
 }: AuthorProfileProps) {
-    const [articles, setArticles] = useState<Article[]>(initialArticlesData.articles);
-    const [page, setPage] = useState(initialArticlesData.page || 1);
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
+    const initialPage = initialArticlesData.page || 1;
+    const urlPage = (() => {
+        const parsed = Number(searchParams.get('page'));
+        return parsed > 0 ? parsed : initialPage;
+    })();
+    const isDeepLinkedPage = urlPage !== initialPage;
+
+    const [articles, setArticles] = useState<Article[]>(
+        isDeepLinkedPage ? [] : initialArticlesData.articles
+    );
+    const [page, setPage] = useState(urlPage);
     const [totalPages, setTotalPages] = useState(initialArticlesData.totalPages || 1);
     const [totalArticles, setTotalArticles] = useState(
         initialArticlesData.totalArticles ?? initialArticlesData.articles.length
     );
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(isDeepLinkedPage);
     const [error, setError] = useState(initialError);
+
+    const isFirstRender = useRef(true);
+
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+
+            if (page === initialPage) {
+                return;
+            }
+        }
+
+        const loadArticles = async () => {
+            setIsLoading(true);
+            setError('');
+
+            try {
+                const data = await fetchAuthorArticlesClient(
+                    author._id,
+                    page,
+                    ARTICLES_PER_PAGE
+                );
+
+                setArticles(data.articles);
+                setTotalPages(data.totalPages);
+
+                if (data.totalArticles !== undefined) {
+                    setTotalArticles(data.totalArticles);
+                }
+            } catch {
+                setError('Unable to load articles. Please try again later.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadArticles();
+    }, [author._id, page, initialPage]);
+
+    const handlePageChange = (nextPage: number) => {
+        if (nextPage === page || nextPage < 1 || nextPage > totalPages) {
+            return;
+        }
+
+        setPage(nextPage);
+
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (nextPage > 1) {
+            params.set('page', String(nextPage));
+        } else {
+            params.delete('page');
+        }
+
+        const query = params.toString();
+        router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    };
 
     const name = author.username || author.email || 'Author';
     const avatarSrc = getAvatarSrc(author.avatar);
 
-    const loadMoreArticles = async () => {
-        const nextPage = Number(page) + 1;
-        setIsLoading(true);
-        setError('');
-
-        try {
-            const data = await fetchAuthorArticlesClient(
-                author._id,
-                nextPage,
-                ARTICLES_PER_PAGE
-            );
-
-            setArticles((prevArticles) => {
-                const existingIds = new Set(prevArticles.map((a) => a._id));
-                const newArticles = data.articles.filter((a) => !existingIds.has(a._id));
-                return [...prevArticles, ...newArticles];
-            });
-
-            setPage(data.page);
-            setTotalPages(data.totalPages);
-
-            if (data.totalArticles !== undefined) {
-                setTotalArticles(data.totalArticles);
-            }
-        } catch {
-            setError('Unable to load articles. Please try again later.');
-
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     const hasArticles = articles.length > 0;
-    const canLoadMore = page < totalPages;
 
     return (
         <div className={css.profileWrapper}>
@@ -132,21 +155,22 @@ export default function AuthorProfile({
                     !isLoading && <p className={css.empty}>This author has no articles yet.</p>
                 )}
 
-                {hasArticles && canLoadMore && (
-                    <div className={css.actions}>
-                        <Button
-                            className={css.button}
-                            type="button"
-                            size="md"
-                            isLoading={isLoading}
-                            loadingText="Loading..."
-                            onClick={() => void loadMoreArticles()}
-                        >
-                            Load more
-                        </Button>
-                    </div>
+                {hasArticles && totalPages > 1 && (
+                    <Pagination
+                        pageCount={totalPages}
+                        currentPage={page}
+                        onPageChange={handlePageChange}
+                    />
                 )}
             </div>
         </div>
+    );
+}
+
+export default function AuthorProfile(props: AuthorProfileProps) {
+    return (
+        <Suspense fallback={null}>
+            <AuthorProfileContent {...props} />
+        </Suspense>
     );
 }

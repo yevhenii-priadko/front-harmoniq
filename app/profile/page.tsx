@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store/authStore';
 import { useProfileStore } from '@/lib/store/profileStore';
 import { getAvatarSrc } from '@/lib/profile/userProfile';
@@ -9,6 +11,13 @@ import css from './ProfileLayout.module.css';
 export default function ProfilePage() {
   const user = useAuthStore((state) => state.user);
   const totalArticles = useProfileStore((state) => state.totalArticles);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.replace('/login');
+    }
+  }, [user, router]);
 
   if (!user) {
     return null;

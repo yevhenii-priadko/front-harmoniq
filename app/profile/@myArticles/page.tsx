@@ -31,11 +31,12 @@ function MyArticlesPageContent() {
   const setTotalArticles = useProfileStore((state) => state.setTotalArticles);
 
   useEffect(() => {
-    if (!user?._id) {
-      return;
-    }
-
     const loadArticles = async () => {
+      if (!user?._id) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
         setIsLoading(true);
         setError("");

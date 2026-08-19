@@ -34,19 +34,22 @@
   margin-top: 32px;
 }
 
+.descriptionWrapper {
+  min-width: 0;
+}
+
 .description {
   color: var(--black);
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
+  margin-bottom: 16px;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 
-.description br {
-  display: block;
-  content: "";
-  margin-bottom: 16px;
+.description:last-child {
+  margin-bottom: 0;
 }
 
 .sidebar {

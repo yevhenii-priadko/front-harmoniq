@@ -70,6 +70,8 @@
   line-height: 1.4;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .author {

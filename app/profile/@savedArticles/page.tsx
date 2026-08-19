@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Oval } from 'react-loader-spinner';
 import ArticlesList from '@/components/ArticlesList/ArticlesList';
 import ErrorNotification from '@/components/ErrorNotification/ErrorNotification';
@@ -9,16 +10,23 @@ import {
   type Article,
 } from '@/lib/api/clientApi';
 import EmptyState from '@/components/EmptyState/EmptyState';
+import Pagination from '@/components/Pagination/Pagination';
 import css from '../ProfileLayout.module.css';
 
 const PER_PAGE = 12;
 
-export default function SavedArticlesPage() {
+function SavedArticlesPageContent() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [articles, setArticles] = useState<Article[]>([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(() => {
+    const urlPage = Number(searchParams.get('savedPage'));
+    return urlPage > 0 ? urlPage : 1;
+  });
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -27,7 +35,7 @@ export default function SavedArticlesPage() {
         setIsLoading(true);
         setError('');
 
-        const data = await fetchSavedArticles(1, PER_PAGE);
+        const data = await fetchSavedArticles(page, PER_PAGE);
 
         setArticles(data.articles);
         setPage(Number(data.page));
@@ -40,32 +48,31 @@ export default function SavedArticlesPage() {
     };
 
     loadArticles();
-  }, []);
+  }, [page]);
 
-  const handleLoadMore = async () => {
-    const nextPage = page + 1;
-
-    try {
-      setIsLoadingMore(true);
-      setError('');
-
-      const data = await fetchSavedArticles(nextPage, PER_PAGE);
-
-      setArticles((prevArticles) => [
-        ...prevArticles,
-        ...data.articles,
-      ]);
-      setPage(Number(data.page));
-      setTotalPages(data.totalPages);
-
-    } catch {
-      setError('Failed to load more saved articles.');
-    } finally {
-      setIsLoadingMore(false);
+  const handlePageChange = (nextPage: number) => {
+    if (nextPage === page || nextPage < 1 || nextPage > totalPages) {
+      return;
     }
-  };
 
-  const hasMoreArticles = page < totalPages;
+    setPage(nextPage);
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (nextPage > 1) {
+      params.set('savedPage', String(nextPage));
+    } else {
+      params.delete('savedPage');
+    }
+
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
 
   if (isLoading) {
     return (
@@ -105,16 +112,21 @@ export default function SavedArticlesPage() {
         </div>
       ) : null}
 
-      {hasMoreArticles && (
-        <button
-          className={css.loadMoreButton}
-          type="button"
-          onClick={handleLoadMore}
-          disabled={isLoadingMore}
-        >
-          {isLoadingMore ? 'Loading...' : 'Load More'}
-        </button>
+      {totalPages > 1 && (
+        <Pagination
+          pageCount={totalPages}
+          currentPage={page}
+          onPageChange={handlePageChange}
+        />
       )}
     </section>
+  );
+}
+
+export default function SavedArticlesPage() {
+  return (
+    <Suspense fallback={null}>
+      <SavedArticlesPageContent />
+    </Suspense>
   );
 }

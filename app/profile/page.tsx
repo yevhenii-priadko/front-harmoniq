@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useAuthStore } from '@/lib/store/authStore';
 import { useProfileStore } from '@/lib/store/profileStore';
+import { getAvatarSrc } from '@/lib/profile/userProfile';
 import css from './ProfileLayout.module.css';
 
 export default function ProfilePage() {
@@ -13,21 +14,17 @@ export default function ProfilePage() {
     return null;
   }
 
-  const hasValidAvatar =
-  !!user.avatar &&
-  (user.avatar.startsWith('https://') ||
-    user.avatar.startsWith('http://') ||
-    user.avatar.startsWith('/'));
+  const avatarSrc = getAvatarSrc(user.avatar);
 
   return (
   <div className={css.profile}>
     <h1 className={css.title}>My Profile</h1>
 
     <div className={css.userInfo}>
-      {hasValidAvatar ? (
+      {avatarSrc ? (
         <Image
           className={css.avatar}
-          src={user.avatar!}
+          src={avatarSrc}
           alt={`${user.username} avatar`}
           width={100}
           height={100}

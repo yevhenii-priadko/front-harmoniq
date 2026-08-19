@@ -8,6 +8,7 @@ import ErrorNotification from "@/components/ErrorNotification/ErrorNotification"
 import FormField from "@/components/FormField/FormField";
 import { updateUserProfile } from "@/lib/api/clientApi";
 import {
+  getAvatarSrc,
   hasProfileChanges,
   validateAvatar,
   validateUsername,
@@ -20,21 +21,10 @@ type UserModalProps = {
   onClose: () => void;
 };
 
-const getRemoteAvatar = (avatar?: string | null) => {
-  if (!avatar) return "";
-
-  try {
-    const url = new URL(avatar);
-    return url.protocol === "https:" ? avatar : "";
-  } catch {
-    return "";
-  }
-};
-
 export default function UserModal({ user, onClose }: UserModalProps) {
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
-  const currentAvatar = getRemoteAvatar(user.avatar);
+  const currentAvatar = getAvatarSrc(user.avatar) ?? "";
   const [username, setUsername] = useState(user.username);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState(currentAvatar);

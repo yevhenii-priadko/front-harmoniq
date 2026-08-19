@@ -91,9 +91,7 @@ function Header() {
 
             {/* UserBar — лише Desktop, лише авторизований, закрите меню */}
             {isAuthenticated && user && (
-              <UserBar
-                user={{ username: user.username, avatar: user.avatar ?? undefined }}
-              />
+              <UserBar user={user} />
             )}
 
             {/* Бургер-кнопка — схована на Desktop */}

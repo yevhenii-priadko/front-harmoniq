@@ -5,21 +5,18 @@ import css from "./UserBar.module.css";
 import { useState } from "react";
 import ErrorNotification from "@/components/ErrorNotification/ErrorNotification";
 import LogoutModal from "@/components/LogoutModal/LogoutModal";
-
-interface User {
-  username?: string;
-  avatar?: string;
-}
+import UserModal from "@/components/UserModal/UserModal";
+import type { AuthUser } from "@/lib/store/authStore";
 
 interface UserBarProps {
-  user: User;
+  user: AuthUser;
 }
 
 // ⚠️ Бекенд іноді підставляє невалідний плейсхолдер "https:URL" замість
 // реального аватара (наприклад, коли юзер реєструється без фото) —
 // next/image впаде на такому значенні. Перевіряємо, що це реально
 // схоже на робочий URL (Cloudinary), інакше показуємо fallback-іконку.
-const getAvatarSrc = (avatar?: string) => {
+const getAvatarSrc = (avatar?: string | null) => {
   if (!avatar) return null;
 
   try {
@@ -32,16 +29,22 @@ const getAvatarSrc = (avatar?: string) => {
 
 export default function UserBar({ user }: UserBarProps) {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [logoutError, setLogoutError] = useState("");
   const avatarSrc = getAvatarSrc(user?.avatar);
 
-  const handleOpenModal = () => setIsLogoutModalOpen(true);
-  const handleCloseModal = () => setIsLogoutModalOpen(false);
+  const handleOpenLogoutModal = () => setIsLogoutModalOpen(true);
+  const handleCloseLogoutModal = () => setIsLogoutModalOpen(false);
 
   return (
     <>
       <div className={css.container}>
-        <div className={css.userBox}>
+        <button
+          type="button"
+          className={css.userBox}
+          aria-label="Edit profile"
+          onClick={() => setIsUserModalOpen(true)}
+        >
           <div className={css.avatarWrapper}>
             {avatarSrc ? (
               <Image
@@ -58,15 +61,15 @@ export default function UserBar({ user }: UserBarProps) {
               </svg>
             )}
           </div>
-          <p className={css.name}>{user.username || "User"}</p>
-        </div>
+          <span className={css.name}>{user.username || "User"}</span>
+        </button>
 
         <div className={css.divider} />
 
         <button
           type="button"
           className={css.logoutBtn}
-          onClick={handleOpenModal}
+          onClick={handleOpenLogoutModal}
           aria-label="Log out"
         >
           <svg className={css.logoutIcon} width={24} height={24}>
@@ -78,7 +81,11 @@ export default function UserBar({ user }: UserBarProps) {
       <ErrorNotification message={logoutError} onClose={() => setLogoutError("")} />
 
       {isLogoutModalOpen && (
-        <LogoutModal onClose={handleCloseModal} onError={setLogoutError} />
+        <LogoutModal onClose={handleCloseLogoutModal} onError={setLogoutError} />
+      )}
+
+      {isUserModalOpen && (
+        <UserModal user={user} onClose={() => setIsUserModalOpen(false)} />
       )}
     </>
   );

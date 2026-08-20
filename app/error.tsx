@@ -17,7 +17,7 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <main className={styles.errorPage}>
+    <div className={styles.errorPage}>
       <div className={styles.content}>
         <p className={styles.code}>Error</p>
 
@@ -38,6 +38,6 @@ export default function ErrorPage({
           Try again
         </button>
       </div>
-    </main>
+    </div>
   );
 }

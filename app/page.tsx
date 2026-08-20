@@ -6,11 +6,11 @@ import Creators from "@/components/Creators/Creators";
 
 export default function Home() {
   return (
-    <main>
+    <>
       <Hero />
       <About />
       <PopularArticles />
       <Creators />
-    </main>
+    </>
   );
 }

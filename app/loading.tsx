@@ -1,19 +1,10 @@
-import { Oval } from 'react-loader-spinner'
+import Spinner from '@/components/Spinner/Spinner'
 import css from './loading.module.css'
 
 export default function Loading() {
 return (
-<Oval
-height={80}
-width={80}
-color="var(--green)"
-wrapperStyle={{}}
-wrapperClass={css.wrapper}
-visible={true}
-ariaLabel="oval-loading"
-secondaryColor="#D1E0D8"
-strokeWidth={2}
-strokeWidthSecondary={2}
-/>
+<div className={css.wrapper}>
+<Spinner size={80} ariaLabel="oval-loading" />
+</div>
 );
 }

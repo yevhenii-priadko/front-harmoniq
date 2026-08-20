@@ -5,7 +5,7 @@ import EmptyState from "@/components/EmptyState/EmptyState";
 import SectionTitle from "@/components/SectionTitle/SectionTitle";
 import { Suspense, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Oval } from "react-loader-spinner";
+import Spinner from "@/components/Spinner/Spinner";
 import Pagination from "@/components/Pagination/Pagination";
 import css from "./page.module.css";
 
@@ -140,16 +140,7 @@ function ArticlesPageContent() {
 
       {isLoading ? (
         <div className={css.loadingWrapper}>
-          <Oval
-            height={60}
-            width={60}
-            color="var(--green)"
-            secondaryColor="#D1E0D8"
-            strokeWidth={2}
-            strokeWidthSecondary={2}
-            visible={true}
-            ariaLabel="oval-loading"
-          />
+          <Spinner size={60} ariaLabel="oval-loading" />
         </div>
       ) : (
         <>

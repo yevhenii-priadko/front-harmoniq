@@ -14,6 +14,8 @@ interface ArticlesItemProps {
   userName: string;
   action?: "bookmark" | "edit";
   userId: string; // Додано userId для перевірки авторства
+  initialIsSaved?: boolean;
+  onRemovedFromSaved?: (articleId: string) => void;
 }
 
 export default function ArticlesItem({
@@ -24,6 +26,8 @@ export default function ArticlesItem({
   userName,
   action = "bookmark",
   userId,
+  initialIsSaved = false,
+  onRemovedFromSaved,
 }: ArticlesItemProps) {
 
   const user = useAuthStore((state) => state.user);
@@ -50,7 +54,12 @@ export default function ArticlesItem({
             showText={false}
           />
         ) : (
-          <ButtonAddToBookmarks articleId={id} variant="icon" />
+          <ButtonAddToBookmarks
+            articleId={id}
+            variant="icon"
+            initialIsSaved={initialIsSaved}
+            onRemovedFromSaved={onRemovedFromSaved}
+          />
         )}
       </div>
     </li>

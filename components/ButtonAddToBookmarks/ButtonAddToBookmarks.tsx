@@ -16,6 +16,8 @@ import css from "./ButtonAddToBookmarks.module.css";
 type ButtonAddToBookmarksProps = {
   articleId: string;
   variant?: "icon" | "full";
+  initialIsSaved?: boolean;
+  onRemovedFromSaved?: (articleId: string) => void;
 };
 
 function getErrorMessage(error: unknown) {
@@ -33,10 +35,12 @@ function getErrorMessage(error: unknown) {
 export default function ButtonAddToBookmarks({
   articleId,
   variant = "full",
+  initialIsSaved = false,
+  onRemovedFromSaved,
 }: ButtonAddToBookmarksProps) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-  const [isSaved, setIsSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState(initialIsSaved);
   const [isChecking, setIsChecking] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,6 +48,10 @@ export default function ButtonAddToBookmarks({
 
   useEffect(() => {
     if (!isAuthenticated) {
+      return;
+    }
+
+    if (initialIsSaved) {
       return;
     }
 
@@ -74,7 +82,7 @@ export default function ButtonAddToBookmarks({
     return () => {
       isCancelled = true;
     };
-  }, [articleId, isAuthenticated]);
+  }, [articleId, initialIsSaved, isAuthenticated]);
 
   const handleClick = async () => {
     // Не дозволяємо користувачу додавати статтю до збережених, якщо він не авторизований. Відкриваємо модальне вікно з повідомленням про помилку.
@@ -90,6 +98,7 @@ export default function ButtonAddToBookmarks({
       if (isSaved) {
         await removeArticleFromSaved(articleId);
         setIsSaved(false);
+        onRemovedFromSaved?.(articleId);
       } else {
         await addArticleToSaved(articleId);
         setIsSaved(true);

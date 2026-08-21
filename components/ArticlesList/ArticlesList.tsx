@@ -19,18 +19,25 @@ type Article = {
 type ArticlesListProps = {
   articles: Article[];
   action?: 'bookmark' | 'edit';
+  initialIsSaved?: boolean;
+  onRemovedFromSaved?: (articleId: string) => void;
 };
 
-export default function ArticlesList({ articles, action = 'bookmark' }: ArticlesListProps) {
+export default function ArticlesList({
+  articles,
+  action = 'bookmark',
+  initialIsSaved = false,
+  onRemovedFromSaved,
+}: ArticlesListProps) {
   if (!articles.length) {
     return <p>No articles found.</p>;
   }
 
   return (
     <ul className={css.articlesList}>
-      {articles.map((article, index) => (
+      {articles.map((article) => (
         <ArticlesItem
-          key={`${article._id}-${index}`}
+          key={article._id}
           id={article._id}
           title={article.title}
           description={article.description}
@@ -38,6 +45,8 @@ export default function ArticlesList({ articles, action = 'bookmark' }: Articles
           userName={article.author ?? "Harmoniq author"}
           action={action}
           userId={article.userId}
+          initialIsSaved={initialIsSaved}
+          onRemovedFromSaved={onRemovedFromSaved}
         />
       ))}
     </ul>
